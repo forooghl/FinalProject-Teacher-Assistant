@@ -1,5 +1,6 @@
 // import "./Login.css";
 import Logo from "../../../assets/img/Logo.png";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     return (
@@ -84,9 +85,9 @@ const Login = () => {
 
                     <p className="mt-10 text-center text-sm text-raisin-black/75">
                         حساب کاربری دارید ؟{" "}
-                        <a href="#" className="font-semibold leading-6 text-queen-blue hover:text-blue-yonder">
+                        <Link to='/Login' className="font-semibold leading-6 text-queen-blue hover:text-blue-yonder">
                             ورود به سایت
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>

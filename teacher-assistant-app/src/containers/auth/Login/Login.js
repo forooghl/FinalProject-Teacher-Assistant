@@ -1,4 +1,5 @@
 import Logo from "../../../assets/img/Logo.png";
+import { Link } from "react-router-dom";
 
 const Login = () => {
     return (
@@ -67,9 +68,9 @@ const Login = () => {
 
                     <p className="mt-10 text-center text-sm text-raisin-black/75">
                         هنوز عضو نشده‌اید ؟{" "}
-                        <a href="#" className="font-semibold leading-6 text-queen-blue hover:text-blue-yonder">
+                        <Link to="/signup" className="font-semibold leading-6 text-queen-blue hover:text-blue-yonder">
                             عضویت در NIT
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>
