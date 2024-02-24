@@ -9,15 +9,15 @@ const Navbar = (props) => {
     return (
         <header>
             <nav class="bg-cultured/50 shadow shadow-independence/15 w-100 px-8 md:px-auto">
-                <div class="md:h-16 h-28 mx-auto md:px-4 container flex items-center justify-between flex-wrap md:flex-nowrap">
+                <div class="h-16 mx-auto md:px-4 container flex items-center justify-between flex-nowrap">
                     {/* Logo */}
-                    <div class="text-tufts-blue md:order-1">
-                        <ul class="flex font-semibold justify-between">
-                            <li>
-                                <NavLink to="/">
-                                    <img class="h-11 w-11" src={Logo} />
-                                </NavLink>
-                            </li>
+                    <div>
+                        <NavLink to="/">
+                            <img class="h-11 w-11" src={Logo} />
+                        </NavLink>
+                    </div>
+                    <div class="text-tufts-blue basis-11/12 max-md:w-auto max-md:basis-1/3">
+                        <ul class="flex font-semibold justify-start max-md:justify-between">
                             <li class="md:px-4 md:py-2 text-queen-blue font-bold">
                                 <NavLink to="/">داشبورد</NavLink>
                             </li>
@@ -26,7 +26,7 @@ const Navbar = (props) => {
                             </li>
                         </ul>
                     </div>
-                    <div class="text-queen-blue order-3 w-full md:w-auto md:order-2">
+                    <div class="text-queen-blue max-md:w-fit">
                         {username ? (
                             <NavLink to="/">
                                 <div className="fa-layers fa-fw fa-2xl hover:text-blue-yonder">
