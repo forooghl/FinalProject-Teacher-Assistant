@@ -7,38 +7,24 @@ const Home = () => {
     // fake data for testing UI
     const course = (
         <>
-            <CardItem
-                date="پاییز 1402"
-                teacherName="دکتر علی غلامی رودی"
-                title="کامپایلر"
-                id="1"
-                linkURL="course"
-            />
-            <CardItem
-                date="بهار 1402"
-                teacherName="دکتر علی غلامی رودی"
-                title="سیستم عامل"
-                id="2"
-                linkURL="course"
-            />
+            <CardItem date="پاییز 1402" teacherName="دکتر علی غلامی رودی" title="کامپایلر" id="1" linkURL="course" />
+            <CardItem date="بهار 1402" teacherName="دکتر علی غلامی رودی" title="سیستم عامل" id="2" linkURL="course" />
         </>
     );
 
     const TaCourse = (
-        <CardItem
-            date="پاییز 1401"
-            teacherName="دکتر علی غلامی رودی"
-            title="سیستم عامل"
-            id="3"
-            linkURL="course"
-        />
+        <CardItem date="پاییز 1401" teacherName="دکتر علی غلامی رودی" title="سیستم عامل" id="3" linkURL="course" />
     );
     return (
         <>
             <Navbar />
             <div className="flex justify-evenly flex-wrap max-md:flex-nowrap mt-10 max-md:flex-col max-md:items-center ">
-                <Card title="کلاس های من" items={course} />
-                <Card title="کلاس های درس" items={TaCourse} />
+                <div className="w-2/5  max-md:w-10/12">
+                    <Card title="کلاس های من" items={course} />
+                </div>
+                <div className="w-2/5  max-md:w-10/12">
+                    <Card title="کلاس های درس" items={TaCourse} />
+                </div>
             </div>
         </>
     );
