@@ -6,6 +6,7 @@ import Login from "./auth/Login/Login";
 import Signup from "./auth/Signup/Signup";
 import Home from "./home/Home";
 import CourseView from "./courseView/CourseView";
+import Exercise from "./exercise/Exercise";
 
 class Routers extends React.Component {
     render() {
@@ -13,6 +14,7 @@ class Routers extends React.Component {
             <Routes>
                 <Route path="/" exact element={<Home />} />
                 <Route path="/course/:id" exact element={<CourseView />} />
+                <Route path="/practice/:id" exact element={<Exercise />} />
                 <Route path="/login" exact element={<Login />} />
                 <Route path="/signup" exact element={<Signup />} />
             </Routes>
