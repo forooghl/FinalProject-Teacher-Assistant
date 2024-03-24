@@ -7,6 +7,7 @@ import Signup from "./auth/Signup/Signup";
 import Home from "./home/Home";
 import CourseView from "./courseView/CourseView";
 import Exercise from "./exercise/Exercise";
+import UserPanel from "./userPanel/UserPanel";
 
 class Routers extends React.Component {
     render() {
@@ -17,6 +18,7 @@ class Routers extends React.Component {
                 <Route path="/practice/:id" exact element={<Exercise />} />
                 <Route path="/login" exact element={<Login />} />
                 <Route path="/signup" exact element={<Signup />} />
+                <Route path="/profile" exact element={<UserPanel />} />
             </Routes>
         );
     }

@@ -22,7 +22,7 @@ const Login = () => {
             const response = await axios.post("/authentication/login/", { username, password });
             console.log(response);
             localStorage.setItem("refresh", response.data.refresh);
-            localStorage.setItem("access", response.data.access);
+            localStorage.setItem("token", response.data.access);
             sessionStorage.setItem("username", username);
             setLoggedIn(true);
         } catch (err) {
