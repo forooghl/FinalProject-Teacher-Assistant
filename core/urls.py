@@ -8,7 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('token/', jwt_views.TokenObtainPairView.as_view(), name ='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name ='token_refresh'),
-    path('authentication/', include("Authentication.urls"))
+    path('authentication/', include("Authentication.urls")),
+    path('Courses/', include("Courses.urls")),
 ]
 
 if settings.DEBUG:
