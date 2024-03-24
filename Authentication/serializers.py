@@ -60,8 +60,9 @@ class LogoutSerializer(serializers.Serializer):
         except TokenError:
             self.fail('bad_token')
 
-class UserSerializer(serializers.Serializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = ('id', 'email', 'username', 'password', 'avatar')
+        extra_kwargs = {'password': {'write_only': True}}
         
