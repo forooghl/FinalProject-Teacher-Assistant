@@ -7,8 +7,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from Authentication.models import UserProfile
 from Authentication.serializers import UserSerializer
-from .models import Course
-from .serializers import CourseSerializers
+from .models import Course, Exercise
+from .serializers import CourseSerializers, ExerciseSerializers
 class ProfessorsView():
     pass
 
@@ -16,7 +16,16 @@ class addCourse(generics.ListCreateAPIView):
     queryset = Course.objects.all()
     permission_classes = (IsAuthenticated,)
     serializer_class = CourseSerializers
+    
+class addExercise(generics.ListCreateAPIView):
+    queryset = Exercise.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ExerciseSerializers
 
+class courseExercise(APIView):
+    def get():
+        pass
+    
 class myCourse(APIView):
     permission_classes = (IsAuthenticated,)
 
