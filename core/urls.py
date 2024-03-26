@@ -9,7 +9,8 @@ urlpatterns = [
     path('token/', jwt_views.TokenObtainPairView.as_view(), name ='token_obtain_pair'),
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name ='token_refresh'),
     path('authentication/', include("Authentication.urls")),
-    path('Courses/', include("Courses.urls")),
+    path('courses/', include("Courses.urls")),
+    path('students/', include("Students.urls")),
 ]
 
 if settings.DEBUG:
