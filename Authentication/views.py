@@ -25,9 +25,22 @@ class UserView(APIView):
     # update user profile image
     def put(self, request):
         user = UserProfile.objects.get(email=request.user.email)
-        user.avatar = request.data['avatar']
-        user.save()
-        return Response({'message': 'Image updated'}, status=status.HTTP_200_OK)
+        
+        if 'avatar' in request.data and 'fullName' in request.data:
+            user.avatar = request.data['avatar']
+            user.fullName = request.data['fullName']
+            user.save()
+            return Response({'message': 'profile and fullName updated successfully'}, status=status.HTTP_200_OK)
+        elif 'avatar' in request.data : 
+            user.avatar = request.data['avatar']
+            user.save()
+            return Response({'message': 'profile updated successfully'}, status=status.HTTP_200_OK)
+        elif 'fullName' in request.data : 
+            user.fullName = request.data['fullName']
+            user.save()
+            return Response({'message': 'your name updated successfully'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'nothing updated'}, status=status.HTTP_200_OK)
 
 class LogoutAPIView(generics.GenericAPIView):
     serializer_class = LogoutSerializer
