@@ -63,6 +63,6 @@ class LogoutSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields = ('id', 'email', 'username', 'password', 'avatar')
+        fields = ('id', 'email', 'username', 'password', 'avatar', 'fullName')
         extra_kwargs = {'password': {'write_only': True}}
         
