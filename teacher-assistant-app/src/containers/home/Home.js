@@ -1,32 +1,92 @@
-import { React } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../component/Navbar/Navbar";
 import CardItem from "../../component/CardItem/CardItem";
 import Card from "../../component/Card/Card";
+import axios from "axios";
 
 const Home = () => {
-    // fake data for testing UI
-    const course = (
-        <>
-            <CardItem date="پاییز 1402" teacherName="دکتر علی غلامی رودی" title="کامپایلر" id="1" linkURL="course" />
-            <CardItem date="بهار 1402" teacherName="دکتر علی غلامی رودی" title="سیستم عامل" id="2" linkURL="course" />
-        </>
-    );
+    const username = sessionStorage.getItem("username");
+    const refresh = localStorage.getItem("refresh");
+    const token = localStorage.getItem("token");
 
-    const TaCourse = (
-        <CardItem date="پاییز 1401" teacherName="دکتر علی غلامی رودی" title="سیستم عامل" id="3" linkURL="course" />
-    );
-    return (
-        <>
-            <Navbar />
-            <div className="flex justify-evenly flex-wrap max-md:flex-nowrap mt-10 max-md:flex-col max-md:items-center ">
-                <div className="w-2/5  max-md:w-10/12">
-                    <Card title="کلاس های من" items={course} />
+    const [myClasses, setMyClasses] = useState([]);
+    const [myTAClasses, setMyTAClasses] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                setIsLoading(true);
+                const response = await axios.get("http://127.0.0.1:8000/students/myClasses/", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setMyClasses(response.data.course_data);
+                setIsLoading(false);
+            } catch (error) {
+                Promise.reject(error);
+                // navigate("/error404");
+            }
+            try {
+                setIsLoading(true);
+                const response = await axios.get("http://127.0.0.1:8000/courses/taCourse/", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setMyTAClasses(response.data.classes);
+                setIsLoading(false);
+            } catch (error) {
+                Promise.reject(error);
+                // navigate("/error404");
+            }
+        }
+        fetchData();
+    }, []);
+
+    if (!isLoading) {
+        const course = (
+            <>
+                {myClasses.map((item) => {
+                    return (
+                        <CardItem
+                            date={new Date(item.date).toLocaleString().split(',')[0]}
+                            teacherName={item.professor}
+                            title={item.courseName}
+                            id={item.id}
+                            linkURL="course"
+                        />
+                    );
+                })}
+            </>
+        );
+        const TaCourse = (
+            <>
+                {myTAClasses.map((item) => {
+                    return (
+                        <CardItem
+                            date={item.date}
+                            teacherName={item.professor}
+                            title={item.courseName}
+                            id={item.id}
+                            linkURL="course"
+                        />
+                    );
+                })}
+            </>
+        );
+        return (
+            <>
+                <Navbar />
+                <div className="flex justify-evenly flex-wrap max-md:flex-nowrap mt-10 max-md:flex-col max-md:items-center ">
+                    <div className="w-2/5  max-md:w-10/12">
+                        <Card title="کلاس های من" items={<>{course}</>} />
+                    </div>
+                    <div className="w-2/5  max-md:w-10/12">
+                        <Card title="کلاس های درس" items={TaCourse} />
+                    </div>
                 </div>
-                <div className="w-2/5  max-md:w-10/12">
-                    <Card title="کلاس های درس" items={TaCourse} />
-                </div>
-            </div>
-        </>
-    );
+            </>
+        );
+    } else {
+        return <Navbar />;
+    }
 };
 export default Home;
