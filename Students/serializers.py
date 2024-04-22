@@ -7,6 +7,11 @@ class StdCourseSerializers(serializers.ModelSerializer):
         model = StudentCourses
         fields = '__all__'
         
+class myCourseSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = StudentCourses
+        fields = ['course_id']
+        
 class StdExerciseSerializers(serializers.ModelSerializer):
     class Meta:
         model = StdExercise
