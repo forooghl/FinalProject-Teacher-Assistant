@@ -1,10 +1,31 @@
-import { React } from "react";
+import { React, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Logo from "../../assets/img/Logo.png";
+import axios from "../../containers/axios";
 
 const Navbar = (props) => {
     const username = sessionStorage.getItem("username");
+    const refresh = localStorage.getItem("refresh");
+    const token = localStorage.getItem("token");
 
+    const [profile, setProfile] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const response = await axios.get("/authentication/profile/", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setProfile(response.data);
+                setIsLoading(false);
+            } catch (error) {
+                Promise.reject(error);
+                // navigate("/error404");
+            }
+        }
+        fetchData();
+    }, []);
     // TODO : control activeClassName="is-active" in NavLink with props
     return (
         <header>
@@ -16,7 +37,7 @@ const Navbar = (props) => {
                             <img className="h-11 w-11" src={Logo} />
                         </NavLink>
                     </div>
-                    <div className="text-tufts-blue basis-11/12 max-md:w-auto max-md:basis-1/3">
+                    <div className="text-tufts-blue basis-8/12 max-lg:basis-6/12 max-md:w-auto max-md:basis-1/3">
                         <ul className="flex font-semibold justify-start max-md:justify-between">
                             <li className="md:px-4 md:py-2 text-queen-blue font-bold">
                                 <NavLink to="/">داشبورد</NavLink>
@@ -28,9 +49,19 @@ const Navbar = (props) => {
                     </div>
                     <div className="text-queen-blue max-md:w-fit">
                         {username ? (
-                            <NavLink to="/">
-                                <div className="fa-layers fa-fw fa-2xl hover:text-blue-yonder">
-                                    <i className="fa fa-user-circle" title="صفحه شخصی"></i>
+                            <NavLink to="/profile">
+                                <div className="flex flex-row ">
+                                    <p className="py-4 px-4 font-semibold ">خوش آمدی {username}</p>
+                                    {isLoading ? (
+                                        <div className="fa-layers fa-fw fa-2xl hover:text-blue-yonder">
+                                            <i className="fa fa-user-circle" title="صفحه شخصی"></i>
+                                        </div>
+                                    ) : (
+                                        <img
+                                            className=" w-12 h-12 rounded-full"
+                                            src={`http://127.0.0.1:8000${profile.avatar}`}
+                                        />
+                                    )}
                                 </div>
                             </NavLink>
                         ) : (
