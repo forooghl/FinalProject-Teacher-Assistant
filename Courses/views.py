@@ -62,7 +62,7 @@ class taCourse(APIView):
         try:
             serializer = UserSerializer(request.user, many=False)
             courses = Course.objects.filter(Ta__in = [serializer.data['id']])
-        except courses.DoesNotExist:
+        except:
             courses = []
 
         courseSerialize = CourseSerializers(courses, many = True)    
