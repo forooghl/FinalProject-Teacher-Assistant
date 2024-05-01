@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../axios";
 import Card from "../../component/Card/Card";
+import CardItem from "../../component/CardItem/CardItem";
+import Navbar from "../../component/Navbar/Navbar";
 
 const UserPanel = () => {
     const username = sessionStorage.getItem("username");
@@ -9,8 +11,12 @@ const UserPanel = () => {
     const token = localStorage.getItem("token");
 
     const [profile, setProfile] = useState([]);
-    const [classes, setClasses] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    const [myTAClasses, setMyTAClasses] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [editProfile, setEditProfile] = useState(false);
+
+    const [newFullName, setNewFullName] = useState("");
+    const [newProfilePicture, setNewProfilePicture] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,22 +25,22 @@ const UserPanel = () => {
                 const response = await axios.get("/authentication/profile/", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setProfile(response.data.Profile);
+                setProfile(response.data);
+                setIsLoading(false);
             } catch (error) {
                 Promise.reject(error);
                 // navigate("/error404");
             }
             try {
                 setIsLoading(true);
-                const response = await axios.get("/Courses/taCourse/", {
+                const response = await axios.get("http://127.0.0.1:8000/courses/taCourse/", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setClasses(response.data["classes"]);
+                setMyTAClasses(response.data.classes);
                 setIsLoading(false);
-                console.log(response.data["classes"]);
-                console.log(classes);
             } catch (error) {
-                console.log(error);
+                Promise.reject(error);
+                // navigate("/error404");
             }
         }
         fetchData();
@@ -42,9 +48,13 @@ const UserPanel = () => {
 
     const handleLogout = () => {
         axios
-            .get("/authentication/logout/", {
-                headers: { Authorization: `Bearer ${token}` },
-            })
+            .post(
+                "/authentication/logout/",
+                { refresh },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            )
             .then(() => {
                 sessionStorage.removeItem("username");
                 localStorage.removeItem("refresh");
@@ -54,83 +64,197 @@ const UserPanel = () => {
             .catch((err) => console.log(err));
     };
 
-    const EditProfileHandler = () => {
-        // navigate("/editProfile");
+    const EditProfileHandler = (event) => {
+        event.preventDefault();
+        const formData = new FormData();
+        if (newProfilePicture === "" && newFullName === "") {
+            console.log("empty");
+            axios
+                .put(`/authentication/profile/`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                })
+                .then(() => {
+                    setEditProfile(false);
+                    window.location.reload();
+                })
+                .catch((err) => console.log(err));
+        } else if (newProfilePicture === "") {
+            formData.append("fullName", newFullName);
+            axios
+                .put(`/authentication/profile/`, formData, {
+                    headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+                })
+                .then(() => {
+                    setEditProfile(false);
+                    window.location.reload();
+                })
+
+                .catch((err) => console.log(err));
+        } else if (newFullName === "") {
+            console.log(newProfilePicture);
+            formData.append("avatar", newProfilePicture);
+            axios
+                .put(`/authentication/profile/`, formData, {
+                    headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+                })
+                .then(() => {
+                    setEditProfile(false);
+                    window.location.reload();
+                })
+                .catch((err) => console.log(err));
+        } else {
+            formData.append("fullName", newFullName);
+            formData.append("avatar", newProfilePicture);
+            axios
+                .put(`/authentication/profile/`, formData, {
+                    headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+                })
+                .then(() => {
+                    setEditProfile(true);
+                    window.location.reload();
+                })
+                .catch((err) => console.log(err));
+        }
     };
-    return (
-        <>
-            <header>
-                <div className="user-panel-container">
-                    <div className="grid px8">
-                        <div className="profile-image">
-                            {/* {profile.length > 0 && (
+
+    if (!isLoading) {
+        const TaCourse = (
+            <>
+                {myTAClasses.map((item) => {
+                    return (
+                        <CardItem
+                            date={item.date}
+                            teacherName={item.professor}
+                            title={item.courseName}
+                            id={item.id}
+                            linkURL="course"
+                        />
+                    );
+                })}
+            </>
+        );
+        return (
+            <>
+                <Navbar />
+                <main className="flex flex-row h-screen no-wrap">
+                    <div className="basis-1/6 h-full">
+                        <div className="flex flex-row items-center shadow shadow-independence/15 py-3 pr-4">
+                            {profile.avatar ? (
                                 <img
-                                    key={Date.now()}
-                                    className="profile-pic"
-                                    src={`http://127.0.0.1:8000${profile[0].avatar}`}
-                                    alt="Profile Picture"
+                                    className=" w-16 h-16 rounded-full"
+                                    src={`http://127.0.0.1:8000${profile.avatar}`}
                                 />
-                            )} */}
+                            ) : (
+                                <div className="fa-layers fa-fw fa-2xl text-blue-yonder">
+                                    <i className="fa fa-user-circle" title="صفحه شخصی"></i>
+                                </div>
+                            )}
+
+                            {profile.fullName ? (
+                                <p className="mr-4">{profile.fullName}</p>
+                            ) : (
+                                <p className="mr-4">{profile.username}</p>
+                            )}
                         </div>
-
-                        <div className="profile-info">
-                            <div className="profile-user-settings">
-                                <h1 className="profile-user-name">{username}</h1>
-
-                                <button className="icon-profile-edit-btn" onClick={EditProfileHandler}>
-                                    <i className="fa-solid fa-user-pen"></i>
-                                </button>
-                                <button className="btn profile-edit-btn" onClick={EditProfileHandler}>
-                                    Edit Profile
-                                </button>
-                                <button
-                                    onClick={handleLogout}
-                                    className="profile-settings-btn"
-                                    aria-label="profile settings"
-                                >
-                                    <i className="fa-solid fa-right-from-bracket" title="Log out"></i>
-                                </button>
+                        <div className="py-3 pr-4 shadow shadow-independence/15">
+                            <button
+                                onClick={() => {
+                                    setEditProfile(false);
+                                }}
+                            >
+                                کلاس دانشجویان
+                            </button>
+                        </div>
+                        <div className="py-3 pr-4 shadow shadow-independence/15">
+                            <button
+                                onClick={() => {
+                                    setEditProfile(true);
+                                }}
+                            >
+                                تغییر اطلاعات حساب کاربری
+                            </button>
+                        </div>
+                        <div className="py-3 pr-4 shadow shadow-independence/15 h-full">
+                            <button onClick={handleLogout}>خروج از حساب کاربری</button>
+                        </div>
+                    </div>
+                    {editProfile ? (
+                        <div className="w-full pt-8">
+                            <button
+                                onClick={() => {
+                                    setEditProfile(false);
+                                }}
+                                className="float-left "
+                            >
+                                <i
+                                    className="fa fa-arrow-left ml-16 border solid border-black rounded-full p-2"
+                                    aria-hidden="true"
+                                ></i>
+                            </button>
+                            <div className="lg:px-8 w-full">
+                                <h3 className="mr-8 text-2xl font-bold leading-9 tracking-tight text-raisin-black mb-6">
+                                    به روزرسانی صفحه کاربری
+                                </h3>
+                                <div className="w-full sm:w-full">
+                                    <form className="p-8 flex flex-col">
+                                        <div>
+                                            <label
+                                                htmlFor="name"
+                                                className=" text-sm font-semibold leading-6 text-raisin-black "
+                                            >
+                                                نام و نام خانوادگی :
+                                            </label>
+                                            <input
+                                                id="name"
+                                                type="text"
+                                                placeholder="نام کامل خود را وارد کنید"
+                                                value={newFullName}
+                                                className=" w-1/5 rounded-l border-b-2 mr-2 border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
+                                                onChange={(event) => setNewFullName(event.target.value)}
+                                            />
+                                        </div>
+                                        <div className="mt-8">
+                                            <label
+                                                htmlFor="name"
+                                                className="text-sm font-semibold leading-6 text-raisin-black "
+                                            >
+                                                پروفایل جدید :
+                                            </label>
+                                            <input
+                                                type="file"
+                                                placeholder="پروفایل جدید"
+                                                className="rounded-md py-1.5 pr-2 text-raisin-black placeholder:text-raisin-black/50 sm:text-sm sm:leading-6"
+                                                onChange={(event) => setNewProfilePicture(event.target.files[0])}
+                                            />
+                                        </div>
+                                        <button
+                                            onClick={EditProfileHandler}
+                                            className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
+                                        >
+                                            Save Changes
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-
-                            <div className="profile-stats">
-                                <ul>
-                                    <li>
-                                        {classes.length > 0 && (
-                                            <span className="profile-stat-count">{classes.length} </span>
-                                        )}
-                                        classes
-                                    </li>
-                                </ul>
-                            </div>
-
-                            {/* <div className="profile-bio">{profile.length > 0 && <p>{profile[0].bio}</p>}</div> */}
                         </div>
-                    </div>
-                </div>
-            </header>
-
-            {isLoading ? (
-                <></>
-            ) : (
-                // <Loader />
-
-                <main>
-                    <div className="container">
-                        <div className="gallery">
-                            {classes.map((item) => (
-                                <Card key={item.id} id={item.id} title={item.courseName} />
-                            ))}
+                    ) : (
+                        <div className="pr-8 mt-8">
+                            <h1 className="font-semibold text-xl">کلاس دانشجویان</h1>
+                            {TaCourse ? (
+                                <div className="pt-4">چیزی برای نمایش وجود ندارد</div>
+                            ) : (
+                                <div className="border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
+                                    {TaCourse}
+                                </div>
+                            )}
                         </div>
-                    </div>
-                    <div className="add-post-button">
-                        <Link to={"/addCourse"}>
-                            <i title="add post" className="fa fa-plus-square-o"></i>
-                        </Link>
-                    </div>
+                    )}
                 </main>
-            )}
-        </>
-    );
+            </>
+        );
+    } else {
+        return <Navbar />;
+    }
 };
 
 export default UserPanel;
