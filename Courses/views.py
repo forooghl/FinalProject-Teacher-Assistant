@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from Authentication.models import UserProfile
 from Authentication.serializers import UserSerializer
 from .models import Course, Exercise
-from .serializers import CourseSerializers, ExerciseSerializers, ExerciseDataSerializers
+from .serializers import CourseSerializers, CourseDataSerializers, ExerciseSerializers, ExerciseDataSerializers
 
 from Students.models import StudentCourses
 from Students.serializers import StdCourseSerializers
@@ -16,10 +16,42 @@ from Students.serializers import StdCourseSerializers
 class ProfessorsView():
     pass
 
-class addCourse(generics.ListCreateAPIView):
-    queryset = Course.objects.all()
+class addCourse(APIView):
     permission_classes = (IsAuthenticated,)
-    serializer_class = CourseSerializers
+    def get(self, request):
+        courses = Course.objects.all()
+        serializer_class = CourseDataSerializers(courses, many = True)
+        return Response(serializer_class.data, status=status.HTTP_201_CREATED)
+
+    def post(self, request):
+        professor = list(UserProfile.objects.filter(email = request.data.get("professor")).values('id'))
+        if professor == []:
+            return Response({"error":"email is not exist"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # error when we ave more tane 1 ta (just add first ta)
+        Ta = []
+        try:
+            for taEmail in request.data.getlist('Ta'):
+                item = list(UserProfile.objects.filter(email = taEmail).values('id'))
+                Ta.append(item[0]['id'])
+        except:
+            item = list(UserProfile.objects.filter(email__in = request.data.get('Ta')).values('id'))
+            Ta.append(item[0]['id'])
+            
+        
+        data = {
+            'courseName' : request.data.get("courseName"),
+            'date' : request.data.get("date"),
+            'professor' : professor[0]['id'],
+            'Ta' : Ta  
+        }
+        serializer = CourseSerializers(data = data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class addExercise(generics.ListCreateAPIView):
     queryset = Exercise.objects.all()
@@ -53,7 +85,7 @@ class CourseData(APIView):
             course = Course.objects.filter(id = id)
         except:
             course = ''
-        courseSerialize = CourseSerializers(course, many = True)  
+        courseSerialize = CourseDataSerializers(course, many = True)  
         return Response({'course_data' : courseSerialize.data})
 
 # courses where the user is a teacher's assistant
