@@ -8,12 +8,14 @@ import Home from "./home/Home";
 import CourseView from "./courseView/CourseView";
 import Exercise from "./exercise/Exercise";
 import UserPanel from "./userPanel/UserPanel";
+import NewClass from "./newClass/NewClass";
 
 class Routers extends React.Component {
     render() {
         return (
             <Routes>
                 <Route path="/" exact element={<Home />} />
+                <Route path="/newCourse" exact element={<NewClass />} />
                 <Route path="/course/:id" exact element={<CourseView />} />
                 <Route path="/practice/:id" exact element={<Exercise />} />
                 <Route path="/login" exact element={<Login />} />
