@@ -28,16 +28,15 @@ class addCourse(APIView):
         if professor == []:
             return Response({"error":"email is not exist"}, status=status.HTTP_400_BAD_REQUEST)
         
-        # error when we ave more tane 1 ta (just add first ta)
         Ta = []
-        try:
-            for taEmail in request.data.getlist('Ta'):
+        try: # if more than one TA
+            for taEmail in request.data.get('Ta'):
                 item = list(UserProfile.objects.filter(email = taEmail).values('id'))
                 Ta.append(item[0]['id'])
-        except:
-            item = list(UserProfile.objects.filter(email__in = request.data.get('Ta')).values('id'))
-            Ta.append(item[0]['id'])
             
+        except: # if just have one TA
+            item = list(UserProfile.objects.filter(email = request.data.get('Ta')).values('id'))
+            Ta.append(item[0]['id'])
         
         data = {
             'courseName' : request.data.get("courseName"),
