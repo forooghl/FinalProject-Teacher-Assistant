@@ -9,6 +9,8 @@ from Authentication.models import UserProfile
 from Authentication.serializers import UserSerializer
 from .models import Course, Exercise
 from .serializers import CourseSerializers, CourseDataSerializers, ExerciseSerializers, ExerciseDataSerializers
+from django.db.models import Q
+import urllib.parse
 
 from Students.models import StudentCourses
 from Students.serializers import StdCourseSerializers
@@ -98,3 +100,10 @@ class taCourse(APIView):
 
         courseSerialize = CourseDataSerializers(courses, many = True)    
         return Response({'classes' : courseSerialize.data})
+    
+class Search(generics.ListAPIView):
+    search_fields = ['courseName']
+    permission_classes = [AllowAny]
+    filter_backends = (filters.SearchFilter,)
+    queryset = Course.objects.all()
+    serializer_class = CourseDataSerializers
