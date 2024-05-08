@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../component/Navbar/Navbar";
 import Card from "../../component/Card/Card";
 import CardItem from "../../component/CardItem/CardItem";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../axios";
 
 const CourseView = (props) => {
     const { id } = useParams();
@@ -15,11 +15,31 @@ const CourseView = (props) => {
     const [exercise, setExercise] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const [user_id, setUser_id] = useState();
+    const [isStudent, setIsStudent] = useState(false);
+    const [isTA, setIsTA] = useState(false);
+    const [isProfessor, setIsProfessor] = useState(false);
+    const navigate = useNavigate();
+
     useEffect(() => {
         async function fetchData() {
             try {
                 setIsLoading(true);
-                const response = await axios.get(`http://127.0.0.1:8000/courses/courseData/${id}`, {
+                const response = await axios.get(`/students/joinOrNot/${id}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setIsTA(response.data.isTA);
+                setIsProfessor(response.data.isProfessor);
+                setIsStudent(response.data.isStudent);
+                setUser_id(response.data.user_id);
+            } catch (error) {
+                Promise.reject(error);
+                // navigate("/error404");
+            }
+
+            try {
+                setIsLoading(true);
+                const response = await axios.get(`/courses/courseData/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setCourse(response.data.course_data);
@@ -31,7 +51,7 @@ const CourseView = (props) => {
 
             try {
                 setIsLoading(true);
-                const response = await axios.get(`http://127.0.0.1:8000/courses/courseExercise/${id}`, {
+                const response = await axios.get(`/courses/courseExercise/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setExercise(response.data.course_exercises);
@@ -54,7 +74,7 @@ const CourseView = (props) => {
                         <CardItem
                             title={item.exerciseName}
                             teacherName=""
-                            date={new Date(item.endDate).toLocaleString().split(',')[0]}
+                            date={new Date(item.endDate).toLocaleString().split(",")[0]}
                             id={item.id}
                             linkURL="practice"
                         />
@@ -80,22 +100,82 @@ const CourseView = (props) => {
                 </div>
             </div>
         );
-        return (
-            <>
-                <Navbar />
-                <div className="flex justify-evenly flex-wrap max-md:flex-nowrap mt-10 max-md:flex-col max-md:items-center">
-                    <div className="w-3/12  max-md:w-10/12">
-                        <Card title="🏛️درس در یک نگاه" items={classDetail} />
-                    </div>
-                    <div className="w-3/12  max-md:w-10/12">
-                        <Card title="📰 اطلاع رسانی" items={practice} />
-                    </div>
-                    <div className="w-4/12  max-md:w-10/12">
-                        <Card title="📑تمرین‌ها" items={practice} />
-                    </div>
-                </div>
-            </>
-        );
+
+        // can edit class settings and add exercise
+        if (isProfessor || isTA) {
+            if (isLoading) {
+                return <Navbar />;
+            } else {
+                return (
+                    <>
+                        <Navbar />
+                        <div className="flex justify-evenly flex-wrap max-md:flex-nowrap mt-10 max-md:flex-col max-md:items-center">
+                            <div className="w-3/12  max-md:w-10/12">
+                                <Card title="درس در یک نگاه" items={classDetail} cardType="class" />
+                            </div>
+                            <div className="w-3/12  max-md:w-10/12">
+                                <Card title="اطلاع رسانی" items={practice} cardType="practice" />
+                            </div>
+                            <div className="w-4/12  max-md:w-10/12">
+                                <div className="flex flex-col">
+                                    <div className="flex flex-row justify-between">
+                                        <p className="font-bold text-raisin-black text-lg pr-3 mb-2">
+                                            تمرین ها
+                                            <i className="fa fa-pencil pr-2 text-blue-yonder" aria-hidden="true"></i>
+                                        </p>
+                                        <button
+                                            className="mb-2"
+                                            onClick={() => navigate("/addNewExercise", { state: id })}
+                                        >
+                                            <i className="fa fa-plus rounded-full px-2 py-1 text-sm bg-blue-yonder hover:bg-tufts-blue text-cultured"></i>
+                                        </button>
+                                    </div>
+                                    {practice ? (
+                                        <div className="border-solid border border-rich-black-fogra-29/10 py-2 text-center shadow rounded-md max-md:mb-8">
+                                            چیزی برای نمایش وجود ندارد
+                                        </div>
+                                    ) : (
+                                        <div className="border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
+                                            {practice}
+                                        </div>
+                                    )}
+                                </div>
+                                {/* <Card title="تمرین ها" items={practice} cardType="practice" /> */}
+                            </div>
+                        </div>
+                    </>
+                );
+            }
+        }
+
+        // just see exercise and upload answer and see class detail
+        if (isStudent) {
+            if (isLoading) {
+                return <Navbar />;
+            } else {
+                return (
+                    <>
+                        <Navbar />
+                        <div className="flex justify-evenly flex-wrap max-md:flex-nowrap mt-10 max-md:flex-col max-md:items-center">
+                            <div className="w-3/12  max-md:w-10/12">
+                                <Card title="درس در یک نگاه" items={classDetail} cardType="class" />
+                            </div>
+                            <div className="w-3/12  max-md:w-10/12">
+                                <Card title="اطلاع رسانی" items={practice} cardType="practice" />
+                            </div>
+                            <div className="w-4/12  max-md:w-10/12">
+                                <Card title="تمرین ها" items={practice} cardType="practice" />
+                            </div>
+                        </div>
+                    </>
+                );
+            }
+        }
+        
+        // should join the class
+        else {
+            navigate(`/joinClass/${id}`, { state: user_id });
+        }
     }
 };
 
