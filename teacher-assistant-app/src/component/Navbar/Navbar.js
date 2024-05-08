@@ -13,15 +13,17 @@ const Navbar = (props) => {
 
     useEffect(() => {
         async function fetchData() {
-            try {
-                const response = await axios.get("/authentication/profile/", {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setProfile(response.data);
-                setIsLoading(false);
-            } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+            if (username) {
+                try {
+                    const response = await axios.get("/authentication/profile/", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    setProfile(response.data);
+                    setIsLoading(false);
+                } catch (error) {
+                    Promise.reject(error);
+                    // navigate("/error404");
+                }
             }
         }
         fetchData();
