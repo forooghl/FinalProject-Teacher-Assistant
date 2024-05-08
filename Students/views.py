@@ -14,6 +14,18 @@ from Courses.serializers import CourseSerializers
 from .models import StudentCourses
 from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers
 
+
+class joinOrNot(APIView):
+    # permission_classes = (IsAuthenticated,)
+    def get(self, request, id):
+        serializer = UserSerializer(request.user, many=False)
+        std_class = StudentCourses.objects.filter(user_id = serializer.data['id'], course_id = id).exists()
+
+        ta_class = Course.objects.filter(Ta__in = [serializer.data['id']], id = id).exists()
+        professor_class = Course.objects.filter(professor = serializer.data['id'], id = id).exists()
+        
+        return Response({'isStudent': std_class, 'isTA' : ta_class, 'isProfessor': professor_class, 'user_id' : serializer.data['id']}) 
+    
 class myClass(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
