@@ -97,5 +97,5 @@ class taCourse(APIView):
         except:
             courses = []
 
-        courseSerialize = CourseSerializers(courses, many = True)    
+        courseSerialize = CourseDataSerializers(courses, many = True)    
         return Response({'classes' : courseSerialize.data})

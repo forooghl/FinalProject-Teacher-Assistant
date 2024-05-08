@@ -8,7 +8,7 @@ class CourseSerializers(serializers.ModelSerializer):
         fields = '__all__'
         
 class CourseDataSerializers(serializers.ModelSerializer):
-    professor = serializers.SlugRelatedField(slug_field='username', read_only = True)
+    professor = serializers.StringRelatedField(read_only = True)
     Ta = serializers.StringRelatedField(many=True)
     class Meta:
         model = Course
