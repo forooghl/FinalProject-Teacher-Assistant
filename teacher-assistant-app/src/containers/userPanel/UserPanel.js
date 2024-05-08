@@ -156,7 +156,7 @@ const UserPanel = () => {
                                 <p className="mr-4">{profile.username}</p>
                             )}
                         </div>
-                        <div className="py-3 pr-4 shadow shadow-independence/15">
+                        <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
                             <button
                                 onClick={() => {
                                     setEditProfile(false);
@@ -165,7 +165,7 @@ const UserPanel = () => {
                                 کلاس دانشجویان
                             </button>
                         </div>
-                        <div className="py-3 pr-4 shadow shadow-independence/15">
+                        <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
                             <button
                                 onClick={() => {
                                     setEditProfile(true);
@@ -174,7 +174,7 @@ const UserPanel = () => {
                                 تغییر اطلاعات حساب کاربری
                             </button>
                         </div>
-                        <div className="py-3 pr-4 shadow shadow-independence/15 h-full">
+                        <div className="py-3 pr-4 shadow shadow-independence/15 h-full hover:bg-cultured/30">
                             <button onClick={handleLogout}>خروج از حساب کاربری</button>
                         </div>
                     </div>
@@ -231,21 +231,21 @@ const UserPanel = () => {
                                             onClick={EditProfileHandler}
                                             className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
                                         >
-                                            Save Changes
+                                            ذخیره تغییرات
                                         </button>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="pr-8 mt-8">
+                        <div className="pr-8 mt-8 w-full">
                             <h1 className="font-semibold text-xl">کلاس دانشجویان</h1>
                             {TaCourse ? (
-                                <div className="pt-4">چیزی برای نمایش وجود ندارد</div>
-                            ) : (
-                                <div className="border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
+                                <div className="w-1/2 mt-2 mr-4 border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
                                     {TaCourse}
                                 </div>
+                            ) : (
+                                <div className="pt-4">چیزی برای نمایش وجود ندارد</div>
                             )}
                         </div>
                     )}
