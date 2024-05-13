@@ -10,6 +10,7 @@ import Exercise from "./exercise/Exercise";
 import UserPanel from "./userPanel/UserPanel";
 import NewClass from "./newClass/NewClass";
 import JoinNewClass from "./joinNewClass/JoinNewClass";
+import NewExercise from "./newExercise/NewExercise";
 
 class Routers extends React.Component {
     render() {
@@ -17,6 +18,7 @@ class Routers extends React.Component {
             <Routes>
                 <Route path="/" exact element={<Home />} />
                 <Route path="/newCourse" exact element={<NewClass />} />
+                <Route path="/addExercise" exact element={<NewExercise />} />
                 <Route path="/course/:id" exact element={<CourseView />} />
                 <Route path="/joinClass/:id" exact element={<JoinNewClass />} />
                 <Route path="/practice/:id" exact element={<Exercise />} />
