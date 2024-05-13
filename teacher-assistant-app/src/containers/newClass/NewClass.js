@@ -161,57 +161,6 @@ const NewClass = () => {
                             ایجاد کلاس جدید
                         </button>
                     </form>
-
-                    {/* <form className="flex flex-col">
-                        <div className="">
-                            <input
-                                id="name"
-                                type="text"
-                                placeholder="نام درس را وارد کنید"
-                                value={courseName}
-                                className="rounded-l border-b-2  border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
-                                onChange={(event) => setCourseName(event.target.value)}
-                            />
-                        </div>
-                        <div className="mt-8">
-                            <input
-                                id="name"
-                                type="email"
-                                placeholder="ایمیل استاد درس را وارد کنید"
-                                value={professorEmail}
-                                className="rounded-l border-b-2 border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
-                                onChange={(event) => setProfessorEmail(event.target.value)}
-                            />
-                        </div>
-                        <div className="mt-8">
-                            <input
-                                id="name"
-                                type="email"
-                                placeholder="ایمیل دستیار آموزشی درس را وارد کنید"
-                                value={userEmail}
-                                className="block rounded-l border-b-2 mt-2 border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
-                                onChange={(event) => setUserEmail(event.target.value)}
-                            />
-                        </div>
-                        <div className="mt-8">
-                            <input
-                                id="name"
-                                type="email"
-                                placeholder="ایمیل دستیار آموزشی درس را وارد کنید"
-                                value={TaEmail}
-                                className="block rounded-l border-b-2 mt-2 border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
-                                onChange={(event) => {
-                                    setTaEmail(event.target.value);
-                                }}
-                            />
-                        </div>
-                        <button
-                            onClick={AddNewCourse}
-                            className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
-                        >
-                            ایجاد کلاس جدید
-                        </button>
-                    </form> */}
                 </div>
             </div>
         </>
