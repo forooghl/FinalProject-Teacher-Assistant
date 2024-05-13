@@ -17,7 +17,7 @@ class CourseDataSerializers(serializers.ModelSerializer):
 class ExerciseSerializers(serializers.ModelSerializer):
     class Meta:
         model = Exercise
-        fields = ['id', 'exerciseName', 'endDate']
+        fields = '__all__'
         
 class ExerciseDataSerializers(serializers.ModelSerializer):
     class Meta:
