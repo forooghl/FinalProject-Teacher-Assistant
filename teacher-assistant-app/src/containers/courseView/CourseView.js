@@ -125,7 +125,7 @@ const CourseView = (props) => {
                                         </p>
                                         <button
                                             className="mb-2"
-                                            onClick={() => navigate("/addNewExercise", { state: id })}
+                                            onClick={() => navigate("/addExercise", { state: id })}
                                         >
                                             <i className="fa fa-plus rounded-full px-2 py-1 text-sm bg-blue-yonder hover:bg-tufts-blue text-cultured"></i>
                                         </button>
