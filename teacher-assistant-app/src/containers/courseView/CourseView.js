@@ -131,12 +131,12 @@ const CourseView = (props) => {
                                         </button>
                                     </div>
                                     {practice ? (
-                                        <div className="border-solid border border-rich-black-fogra-29/10 py-2 text-center shadow rounded-md max-md:mb-8">
-                                            چیزی برای نمایش وجود ندارد
-                                        </div>
-                                    ) : (
                                         <div className="border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
                                             {practice}
+                                        </div>
+                                    ) : (
+                                        <div className="border-solid border border-rich-black-fogra-29/10 py-2 text-center shadow rounded-md max-md:mb-8">
+                                            چیزی برای نمایش وجود ندارد
                                         </div>
                                     )}
                                 </div>
@@ -171,7 +171,7 @@ const CourseView = (props) => {
                 );
             }
         }
-        
+
         // should join the class
         else {
             navigate(`/joinClass/${id}`, { state: user_id });
