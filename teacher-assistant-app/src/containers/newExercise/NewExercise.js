@@ -36,8 +36,8 @@ const NewExercise = () => {
                     "Content-Type": "multipart/form-data",
                     headers: { Authorization: `Bearer ${token}` },
                 })
-                .then(() => {
-                    window.location.reload();
+                .then((response) => {
+                    navigate(`/practice/${response.data.id}`);
                 })
 
                 .catch((err) => console.log(err));
@@ -56,8 +56,8 @@ const NewExercise = () => {
                         headers: { Authorization: `Bearer ${token}` },
                     }
                 )
-                .then(() => {
-                    window.location.reload();
+                .then((response) => {
+                    navigate(`/practice/${response.data.id}`);
                 })
 
                 .catch((err) => console.log(err));
@@ -118,7 +118,7 @@ const NewExercise = () => {
                                 id="uploadFile"
                                 name="uploadFile"
                                 type="file"
-                                value={file}
+                                accept="application/pdf"
                                 className="text-raisin-black/50 cursor-pointer file:cursor-pointer file:border-none file:py-1 file:px-3 file:hover:bg-blue-yonder file:hover:text-cultured file:rounded"
                                 onChange={(event) => setFile(event.target.files[0])}
                             />
