@@ -33,8 +33,7 @@ const CourseView = (props) => {
                 setIsStudent(response.data.isStudent);
                 setUser_id(response.data.user_id);
             } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+                navigate("/error", { state: error.response.status });
             }
 
             try {
@@ -45,8 +44,7 @@ const CourseView = (props) => {
                 setCourse(response.data.course_data);
                 setIsLoading(false);
             } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+                navigate("/error", { state: error.response.status });
             }
 
             try {
@@ -57,8 +55,7 @@ const CourseView = (props) => {
                 setExercise(response.data.course_exercises);
                 setIsLoading(false);
             } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+                navigate("/error", { state: error.response.status });
             }
         }
         fetchData();
