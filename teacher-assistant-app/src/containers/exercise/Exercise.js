@@ -27,8 +27,7 @@ const Exercise = (props) => {
                 setCourse_id(response.data.exercise_data[0].courseExercise);
                 setIsLoading(false);
             } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+                navigate("/error", { state: error.response.status });
             }
         }
         fetchData();
