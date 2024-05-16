@@ -4,6 +4,7 @@ import axios from "../axios";
 import Card from "../../component/Card/Card";
 import CardItem from "../../component/CardItem/CardItem";
 import Navbar from "../../component/Navbar/Navbar";
+import { Loader } from "../../ui/loader/Loader";
 
 const UserPanel = () => {
     const username = sessionStorage.getItem("username");
@@ -278,7 +279,12 @@ const UserPanel = () => {
             </>
         );
     } else {
-        return <Navbar />;
+        return (
+            <>
+                <Navbar />
+                <Loader />
+            </>
+        );
     }
 };
 

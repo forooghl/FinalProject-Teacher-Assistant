@@ -4,6 +4,7 @@ import Card from "../../component/Card/Card";
 import CardItem from "../../component/CardItem/CardItem";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../axios";
+import { Loader } from "../../ui/loader/Loader";
 
 const CourseView = (props) => {
     const { id } = useParams();
@@ -62,7 +63,12 @@ const CourseView = (props) => {
     }, []);
 
     if (isLoading) {
-        return <Navbar />;
+        return (
+            <>
+                <Navbar />
+                <Loader />
+            </>
+        );
     } else {
         const practice = (
             <>
@@ -101,7 +107,12 @@ const CourseView = (props) => {
         // can edit class settings and add exercise
         if (isProfessor || isTA) {
             if (isLoading) {
-                return <Navbar />;
+                return (
+                    <>
+                        <Navbar />
+                        <Loader />
+                    </>
+                );
             } else {
                 return (
                     <>
@@ -148,7 +159,12 @@ const CourseView = (props) => {
         // just see exercise and upload answer and see class detail
         if (isStudent) {
             if (isLoading) {
-                return <Navbar />;
+                return (
+                    <>
+                        <Navbar />
+                        <Loader />
+                    </>
+                );
             } else {
                 return (
                     <>

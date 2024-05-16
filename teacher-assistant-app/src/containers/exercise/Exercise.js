@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../component/Navbar/Navbar";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../axios";
+import { Loader } from "../../ui/loader/Loader";
 const Exercise = (props) => {
     const { id } = useParams();
 
@@ -83,7 +84,12 @@ const Exercise = (props) => {
     };
 
     if (isLoading) {
-        return <Navbar />;
+        return (
+            <>
+                <Navbar />
+                <Loader />
+            </>
+        );
     } else {
         return (
             <>

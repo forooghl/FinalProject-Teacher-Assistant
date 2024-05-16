@@ -4,6 +4,7 @@ import Navbar from "../../component/Navbar/Navbar";
 import CardItem from "../../component/CardItem/CardItem";
 import Card from "../../component/Card/Card";
 import axios from "../axios";
+import { Loader } from "../../ui/loader/Loader";
 
 const Home = () => {
     const username = sessionStorage.getItem("username");
@@ -180,7 +181,12 @@ const Home = () => {
             </>
         );
     } else {
-        return <Navbar />;
+        return (
+            <>
+                <Navbar />
+                <Loader />
+            </>
+        );
     }
 };
 export default Home;
