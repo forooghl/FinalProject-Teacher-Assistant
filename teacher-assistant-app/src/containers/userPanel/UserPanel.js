@@ -12,6 +12,7 @@ const UserPanel = () => {
 
     const [profile, setProfile] = useState([]);
     const [myTAClasses, setMyTAClasses] = useState([]);
+    const [professorClasses, setProfessorClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [editProfile, setEditProfile] = useState(false);
 
@@ -28,8 +29,7 @@ const UserPanel = () => {
                 setProfile(response.data);
                 setIsLoading(false);
             } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+                navigate("/error", { state: error.response.status });
             }
             try {
                 setIsLoading(true);
@@ -39,8 +39,17 @@ const UserPanel = () => {
                 setMyTAClasses(response.data.classes);
                 setIsLoading(false);
             } catch (error) {
-                Promise.reject(error);
-                // navigate("/error404");
+                navigate("/error", { state: error.response.status });
+            }
+            try {
+                setIsLoading(true);
+                const response = await axios.get("http://127.0.0.1:8000/courses/professorCourse", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setProfessorClasses(response.data.classes);
+                setIsLoading(false);
+            } catch (error) {
+                navigate("/error", { state: error.response.status });
             }
         }
         fetchData();
@@ -121,6 +130,21 @@ const UserPanel = () => {
         const TaCourse = (
             <>
                 {myTAClasses.map((item) => {
+                    return (
+                        <CardItem
+                            date={item.date}
+                            teacherName={item.professor}
+                            title={item.courseName}
+                            id={item.id}
+                            linkURL="course"
+                        />
+                    );
+                })}
+            </>
+        );
+        const professorCourse = (
+            <>
+                {professorClasses.map((item) => {
                     return (
                         <CardItem
                             date={item.date}
@@ -243,6 +267,7 @@ const UserPanel = () => {
                             {TaCourse ? (
                                 <div className="w-1/2 mt-2 mr-4 border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
                                     {TaCourse}
+                                    {professorCourse}
                                 </div>
                             ) : (
                                 <div className="pt-4">چیزی برای نمایش وجود ندارد</div>
