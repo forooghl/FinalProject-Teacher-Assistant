@@ -27,7 +27,7 @@ const Login = () => {
             setLoggedIn(true);
         } catch (err) {
             console.log(err);
-            setError("Invalid username or password");
+            setError("رمز عبور یا نام کاربری معتبر نیست");
         }
     };
     return (
@@ -38,7 +38,11 @@ const Login = () => {
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-raisin-black">
                         ورود به حساب کاربری
                     </h2>
-                    {error && <p id="error">{error}</p>}
+                    {error && (
+                        <p className="text-center mt-4 text-queen-blue font-semibold" id="error">
+                            {error}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm ">

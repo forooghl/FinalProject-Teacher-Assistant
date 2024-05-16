@@ -33,7 +33,10 @@ const Signup = () => {
             sessionStorage.setItem("username", username);
             setSignedIn(true);
         } catch (error) {
-            setError(error.response.data.username[0]);
+            try {
+                if (error.response.data.username) setError("حسابی با این نام کاربری وجود دارد");
+                else if (error.response.data.email) setError("حسابی با این ایمیل وجود دارد");
+            } catch {}
         }
     };
 
@@ -45,7 +48,11 @@ const Signup = () => {
                     <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-raisin-black">
                         عضویت در NIT
                     </h2>
-                    {error && <p id="error">{error}</p>}
+                    {error && (
+                        <p className="text-center mt-4 text-queen-blue font-semibold" id="error">
+                            {error}
+                        </p>
+                    )}
                 </div>
 
                 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
