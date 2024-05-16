@@ -11,12 +11,14 @@ import UserPanel from "./userPanel/UserPanel";
 import NewClass from "./newClass/NewClass";
 import JoinNewClass from "./joinNewClass/JoinNewClass";
 import NewExercise from "./newExercise/NewExercise";
+import Error from "./error/Error";
 
 class Routers extends React.Component {
     render() {
         return (
             <Routes>
                 <Route path="/" exact element={<Home />} />
+                <Route path="/error" exact element={<Error />} />
                 <Route path="/newCourse" exact element={<NewClass />} />
                 <Route path="/addExercise" exact element={<NewExercise />} />
                 <Route path="/course/:id" exact element={<CourseView />} />
