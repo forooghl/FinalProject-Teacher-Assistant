@@ -65,6 +65,7 @@ const Home = () => {
                 {searchResult.map((item) => {
                     return (
                         <CardItem
+                            key={item.id}
                             date={new Date(item.date).toLocaleString().split(",")[0]}
                             teacherName={item.professor}
                             title={item.courseName}
@@ -80,6 +81,7 @@ const Home = () => {
                 {myClasses.map((item) => {
                     return (
                         <CardItem
+                            key={item.id}
                             date={new Date(item.date).toLocaleString().split(",")[0]}
                             teacherName={item.professor}
                             title={item.courseName}
@@ -95,6 +97,7 @@ const Home = () => {
                 {myTAClasses.map((item) => {
                     return (
                         <CardItem
+                            key={item.id}
                             date={item.date}
                             teacherName={item.professor}
                             title={item.courseName}
@@ -153,7 +156,9 @@ const Home = () => {
                             <div className="mb-4">
                                 <Card title="نتیجه جست وجو" items={searchCourse} />
                             </div>
-                        ) : <></>}
+                        ) : (
+                            <></>
+                        )}
                         <Card title="کلاس های من" items={course} />
                     </div>
                     <div className="w-2/5  max-md:w-10/12">
