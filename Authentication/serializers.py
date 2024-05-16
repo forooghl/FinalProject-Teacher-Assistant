@@ -16,8 +16,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         email = attrs.get('email', '')
         username = attrs.get('username', '')
         if not username.isalnum():
-            raise serializers.ValidationError(
-                self.default_error_messages)
+            raise serializers.ValidationError(self.default_error_messages)
+        
+        if email and UserProfile.objects.filter(email=email).exists():
+            raise serializers.ValidationError(self.default_error_messages)
+        
         return attrs
     def create(self, validated_data):
         return UserProfile.objects.create_user(**validated_data)
