@@ -101,6 +101,17 @@ class taCourse(APIView):
         courseSerialize = CourseDataSerializers(courses, many = True)    
         return Response({'classes' : courseSerialize.data})
     
+class professorCourse(APIView):
+    def get(self, request):
+        try:
+            serializer = UserSerializer(request.user, many=False)
+            courses = Course.objects.filter(professor = serializer.data['id'])
+        except:
+            courses = []
+
+        courseSerialize = CourseDataSerializers(courses, many = True)    
+        return Response({'classes' : courseSerialize.data})
+    
 class Search(generics.ListAPIView):
     search_fields = ['courseName']
     permission_classes = [AllowAny]
