@@ -12,6 +12,7 @@ const Exercise = (props) => {
     const [exercise, setExercise] = useState([]);
     const [course_id, setCourse_id] = useState("");
     const [ansWindow, setAnsWindow] = useState(false);
+    const [myAnswer, setMyAnswer] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [endDeadline, setEndDeadline] = useState(false);
     const [file, setFile] = useState();
@@ -83,6 +84,32 @@ const Exercise = (props) => {
             .catch((err) => console.log(err));
     };
 
+    const myAnswerHandler = () => {
+        setAnsWindow(true);
+        setIsLoading(true);
+        axios
+            .get(`/students/stdCourseID/${course_id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                axios
+                    .get("/students/myAnswer/", {
+                        headers: { Authorization: `Bearer ${token}` },
+                        params: { exercise_id: id, stdCourse_id: response.data.data[0].id },
+                    })
+                    .then((response) => {
+                        setMyAnswer(response.data["my_answer"]);
+                        setIsLoading(false);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        navigate("/error", { state: error.response.status });
+                    });
+            })
+            .catch((err) => console.log(err));
+    };
+
+
     if (isLoading) {
         return (
             <>
@@ -91,6 +118,58 @@ const Exercise = (props) => {
             </>
         );
     } else {
+        const myAnswerCard = (
+            <>
+                {myAnswer.map((item) => {
+                    let file_name = item.file.replace(/media\/ExerciseAns\/|\.[^.]+$|\//gi, "");
+                    if (file_name.length > 45) {
+                        file_name = file_name.slice(0, 45) + " ...";
+                    }
+                    return (
+                        <div
+                            key={item.id}
+                            className=" h-16 w-full mx-auto px-4 flex items-center shadow shadow-independence/15 justify-between flex-nowrap hover:bg-cultured/30"
+                        >
+                            <div className="flex flex-col justify-between">
+                                <p className="font-semibold text-raisin-black line-clamp-2 overflow-hidden ">
+                                    {endDeadline ? (
+                                        <></>
+                                    ) : item["is_active"] ? (
+                                        <input
+                                            className="hover:cursor-pointer ml-1"
+                                            name="activeAns"
+                                            onClick={activeAnsHandler}
+                                            type="radio"
+                                            id={item.id}
+                                            defaultChecked
+                                        />
+                                    ) : (
+                                        <input
+                                            className="hover:cursor-pointer ml-1"
+                                            name="activeAns"
+                                            onClick={activeAnsHandler}
+                                            type="radio"
+                                            id={item.id}
+                                        />
+                                    )}
+                                    نام فایل: <span className="text-independence text-sm ">{file_name}</span>
+                                </p>
+                                {item["is_active"] ? (
+                                    <p className="text-raisin-black/75 text-sm ">فایل نهایی</p>
+                                ) : (
+                                    <p className="text-raisin-black/75 text-sm"></p>
+                                )}
+                            </div>
+                            <p className="text-united-nations-blue text-sm font-semibold mr-2">
+                                {item.grade}
+                                <span className="text-queen-blue">/100</span>
+                            </p>
+                        </div>
+                    );
+                })}
+            </>
+        );
+
         return (
             <>
                 <Navbar />
@@ -111,7 +190,7 @@ const Exercise = (props) => {
                         </div>
                         {/* TODO */}
                         <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
-                            <button onClick={() => setAnsWindow(true)}>
+                            <button onClick={myAnswerHandler}>
                                 <i className="fa-solid fa-file-import text-blue-yonder"></i>
                                 <span className="mr-2 max-md:hidden">پاسخ های من</span>
                             </button>
@@ -132,12 +211,12 @@ const Exercise = (props) => {
                                 ></i>
                             </button>
                         </div>
-                        <div className="flex basis-9/10 w-5/12 max-md:w-4/5 mx-auto my-10 py-4 px-4 h-fit shadow shadow-independence/15 flex-wrap md:flex-nowrap ">
-                            {ansWindow ? (
-                                <div className="flex flex-col w-full">
-                                    <p> در دست ساخت است ...</p>
-                                </div>
-                            ) : (
+                        {ansWindow ? (
+                            <div className="flex flex-col basis-9/10 w-5/12 max-lg:w-4/5 max-lg:mx-0 max-lg:mt-4 max-lg:my-0 mx-auto my-10 py-4 px-4 h-fit ">
+                                {myAnswerCard}
+                            </div>
+                        ) : (
+                            <div className="flex basis-9/10 w-5/12 max-md:w-4/5 mx-auto my-10 py-4 px-4 h-fit shadow shadow-independence/15 flex-wrap md:flex-nowrap ">
                                 <div className="flex flex-col w-full">
                                     <h1 className="font-bold text-raisin-black text-lg self-center mb-2">
                                         {exercise[0].exerciseName}
@@ -172,8 +251,8 @@ const Exercise = (props) => {
                                         </form>
                                     )}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </main>
             </>
