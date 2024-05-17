@@ -58,7 +58,6 @@ const Exercise = (props) => {
                 formData.append("exercise_id", id);
                 formData.append("std_course_id", response.data.data[0].id);
                 formData.append("file", file);
-                formData.append("is_active", true);
 
                 axios
                     .post("/students/uploadExercise/", formData, {
