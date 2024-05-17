@@ -11,7 +11,7 @@ from Authentication.serializers import UserSerializer
 from Courses.models import Course
 from Courses.serializers import CourseDataSerializers
 
-from .models import StudentCourses
+from .models import StudentCourses, StdExercise
 from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers
 
 
@@ -62,3 +62,13 @@ class uploadExerciseAns(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = StudentCourses.objects.all()
     serializer_class = StdExerciseSerializers
+    
+class myAns(APIView):
+    permission_classes =  (IsAuthenticated,)
+    def get(self, request):
+        try:
+            userAns = StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , std_course_id = request.data.get("stdCourse_id") )
+            serializer = StdExerciseSerializers(userAns, many = True)
+            return Response({"my_answer" : serializer.data}, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
