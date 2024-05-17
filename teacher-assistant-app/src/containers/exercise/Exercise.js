@@ -109,7 +109,23 @@ const Exercise = (props) => {
             .catch((err) => console.log(err));
     };
 
-
+    const activeAnsHandler = (event) => {
+        const ans_id = event.target.id;
+        const std_course_id = myAnswer[0].std_course_id;
+        axios
+            .get("/students/updateFinalAnswer/", {
+                headers: { Authorization: `Bearer ${token}` },
+                params: { exercise_id: id, std_course_id: std_course_id, id: ans_id },
+            })
+            .then((response) => {
+                setMyAnswer(response.data["my_answer"]);
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                navigate("/error", { state: error.response.status });
+            });
+    };
     if (isLoading) {
         return (
             <>
