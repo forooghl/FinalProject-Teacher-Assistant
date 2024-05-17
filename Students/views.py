@@ -72,3 +72,13 @@ class myAns(APIView):
             return Response({"my_answer" : serializer.data}, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+class studentAns(APIView):
+    permission_classes =  (IsAuthenticated,)
+    def get(self, request):
+        try:
+            userAns = StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , is_active = True )
+            serializer = StdExerciseSerializers(userAns, many = True)
+            return Response({"student_answer" : serializer.data}, status=status.HTTP_200_OK)
+        except:
+            return Response({"msg" : "user id not exist ..."},status=status.HTTP_400_BAD_REQUEST)
