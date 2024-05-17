@@ -58,11 +58,32 @@ class addNewClass(generics.ListCreateAPIView):
     queryset = StudentCourses.objects.all()
     serializer_class = StdCourseSerializers
     
-class uploadExerciseAns(generics.ListCreateAPIView):
+class uploadExerciseAns(APIView):
     permission_classes = (IsAuthenticated,)
-    queryset = StudentCourses.objects.all()
-    serializer_class = StdExerciseSerializers
-    
+    def get(self, request):
+        courses = StudentCourses.objects.all()
+        serializer_class = StdExerciseSerializers(courses, many = True)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+    def post(self,request):
+        try:
+            old_ans = StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , std_course_id = request.data.get("std_course_id")).update(is_active = False)
+            data = {
+                "exercise_id" : request.data.get("exercise_id"),
+                "std_course_id" : request.data.get("std_course_id"),
+                "file" : request.data.get("file"),
+                "is_active" : True,
+                "grade" : 0
+            }
+            serializer = StdExerciseSerializers(data = data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+        
 class myAns(APIView):
     permission_classes =  (IsAuthenticated,)
     def get(self, request):
