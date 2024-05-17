@@ -88,7 +88,7 @@ class myAns(APIView):
     permission_classes =  (IsAuthenticated,)
     def get(self, request):
         try:
-            userAns = StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , std_course_id = request.data.get("stdCourse_id") )
+            userAns = StdExercise.objects.filter(exercise_id = request.query_params['exercise_id'] , std_course_id = request.query_params["stdCourse_id"])
             serializer = StdExerciseSerializers(userAns, many = True)
             return Response({"my_answer" : serializer.data}, status=status.HTTP_200_OK)
         except:
@@ -98,8 +98,21 @@ class studentAns(APIView):
     permission_classes =  (IsAuthenticated,)
     def get(self, request):
         try:
-            userAns = StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , is_active = True )
+            userAns = StdExercise.objects.filter(exercise_id = request.query_params["exercise_id"] , is_active = True )
             serializer = StdExerciseSerializers(userAns, many = True)
             return Response({"student_answer" : serializer.data}, status=status.HTTP_200_OK)
         except:
-            return Response({"msg" : "user id not exist ..."},status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+class updateFinalAns(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        try:
+            StdExercise.objects.filter(exercise_id = request.query_params['exercise_id'] , 
+                                                 std_course_id = request.query_params["std_course_id"]).update(is_active = False)
+            StdExercise.objects.filter(id = request.query_params['id']).update(is_active = True)
+            userAns = StdExercise.objects.filter(exercise_id = request.query_params['exercise_id'] , std_course_id = request.query_params["std_course_id"])
+            serializer = StdExerciseSerializers(userAns, many = True)
+            return Response({"my_answer" : serializer.data}, status=status.HTTP_200_OK) 
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
