@@ -16,3 +16,5 @@ class StdExercise(models.Model):
     exercise_id = models.ForeignKey(Exercise, on_delete=models.CASCADE)
     std_course_id = models.ForeignKey(StudentCourses, on_delete=models.CASCADE, related_name='exercises_submitted')
     file = models.FileField(upload_to='ExerciseAns')
+    is_active = models.BooleanField(default=True, blank=True)
+    grade = models.IntegerField(default=0, blank=True)
