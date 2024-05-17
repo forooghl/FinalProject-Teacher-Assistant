@@ -39,7 +39,7 @@ const Exercise = (props) => {
     // بررسی ددلاین تمرین
     useEffect(() => {
         try {
-            const now = new Date().toISOString();
+            const now = new Date().toLocaleString();
             if (exercise[0].endDate > now) {
                 setEndDeadline(false);
             } else {
