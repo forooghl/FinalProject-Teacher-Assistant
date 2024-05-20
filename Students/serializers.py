@@ -13,6 +13,7 @@ class myCourseSerializers(serializers.ModelSerializer):
         fields = ['course_id']
         
 class StdExerciseSerializers(serializers.ModelSerializer):
+    std_course_id = StdCourseSerializers(read_only=True)
     class Meta:
         model = StdExercise
-        fields = '__all__'
+        fields = ['id', 'exercise_id', 'std_course_id', 'file', 'is_active', 'grade']
