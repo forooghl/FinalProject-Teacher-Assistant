@@ -13,10 +13,12 @@ const Home = () => {
 
     const [myClasses, setMyClasses] = useState([]);
     const [myTAClasses, setMyTAClasses] = useState([]);
+    const [professorClasses, setProfessorClasses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [searchResult, setSearchResult] = useState([]);
 
+    const navigate = useNavigate();
     useEffect(() => {
         async function fetchData() {
             if (username) {
@@ -41,6 +43,16 @@ const Home = () => {
                 } catch (error) {
                     Promise.reject(error);
                     // navigate("/error404");
+                }
+                try {
+                    setIsLoading(true);
+                    const response = await axios.get("http://127.0.0.1:8000/courses/professorCourse", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    setProfessorClasses(response.data.classes);
+                    setIsLoading(false);
+                } catch (error) {
+                    navigate("/error", { state: error.response.status });
                 }
             } else {
                 setIsLoading(false);
@@ -93,12 +105,23 @@ const Home = () => {
                 })}
             </>
         );
-        const TaCourse = (
+        const TeachingCourse = (
             <>
                 {myTAClasses.map((item) => {
                     return (
                         <CardItem
                             key={item.id}
+                            date={item.date}
+                            teacherName={item.professor}
+                            title={item.courseName}
+                            id={item.id}
+                            linkURL="course"
+                        />
+                    );
+                })}
+                {professorClasses.map((item) => {
+                    return (
+                        <CardItem
                             date={item.date}
                             teacherName={item.professor}
                             title={item.courseName}
@@ -175,7 +198,7 @@ const Home = () => {
                         <Card title="کلاس های من" items={course} />
                     </div>
                     <div className="w-2/5  max-md:w-10/12">
-                        <Card title="کلاس های درس" items={TaCourse} />
+                        <Card title="کلاس های درس" items={TeachingCourse} />
                     </div>
                 </div>
             </>
