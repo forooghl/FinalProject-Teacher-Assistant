@@ -336,29 +336,35 @@ const Exercise = (props) => {
                                             <div class="flex-1 border-t-2 border-independece/15"></div>
                                         </div>
 
-                                        {endDeadline ? (
-                                            <p className="text-center text-blue-yonder">
-                                                زمان پاسخ دهی به اتمام رسیده است
-                                            </p>
+                                        {std_course_id.length > 0 ? (
+                                            endDeadline ? (
+                                                <p className="text-center text-blue-yonder mb-4">
+                                                    زمان پاسخ دهی به اتمام رسیده است
+                                                </p>
+                                            ) : (
+                                                <form onSubmit={handleSubmit}>
+                                                    <label htmlFor="uploadFile" className="block">
+                                                        فایل <span className="text-red-500">*</span>
+                                                    </label>
+                                                    <input
+                                                        id="uploadFile"
+                                                        name="uploadFile"
+                                                        type="file"
+                                                        className="text-raisin-black/50 cursor-pointer file:cursor-pointer file:border-none file:py-1 file:px-3 file:hover:bg-blue-yonder file:hover:text-cultured file:rounded"
+                                                        onChange={(event) => setFile(event.target.files[0])}
+                                                    />
+                                                    <button
+                                                        className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 mb-2 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
+                                                        type="submit"
+                                                    >
+                                                        ارسال
+                                                    </button>
+                                                </form>
+                                            )
                                         ) : (
-                                            <form onSubmit={handleSubmit}>
-                                                <label htmlFor="uploadFile" className="block">
-                                                    فایل <span className="text-red-500">*</span>
-                                                </label>
-                                                <input
-                                                    id="uploadFile"
-                                                    name="uploadFile"
-                                                    type="file"
-                                                    className="text-raisin-black/50 cursor-pointer file:cursor-pointer file:border-none file:py-1 file:px-3 file:hover:bg-blue-yonder file:hover:text-cultured file:rounded"
-                                                    onChange={(event) => setFile(event.target.files[0])}
-                                                />
-                                                <button
-                                                    className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
-                                                    type="submit"
-                                                >
-                                                    ارسال
-                                                </button>
-                                            </form>
+                                            <p className="text-center text-blue-yonder mb-4">
+                                                محل بارگذاری پاسخ دانشجویان
+                                            </p>
                                         )}
                                     </div>
                                 </div>
