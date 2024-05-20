@@ -76,6 +76,15 @@ class uploadExerciseAns(APIView):
         except:
             return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
         
+    def put(self,request):
+        try:
+            stdObj = StdExercise.objects.get(exercise_id = request.data['id'], std_course_id = request.data['std_course_id'], is_active = True)
+            stdObj.grade = request.data['grade']
+            stdObj.save()
+            return Response({'message': 'student grade updated successfully'}, status=status.HTTP_200_OK)
+        except:
+            return Response( status=status.HTTP_400_BAD_REQUEST)
+        
 class myAns(APIView):
     permission_classes =  (IsAuthenticated,)
     def get(self, request):
