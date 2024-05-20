@@ -12,7 +12,7 @@ from Courses.models import Course
 from Courses.serializers import CourseDataSerializers
 
 from .models import StudentCourses, StdExercise
-from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers
+from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers, uploadExerciseSerializers
 
 
 class joinOrNot(APIView):
@@ -56,7 +56,10 @@ class uploadExerciseAns(APIView):
 
     def post(self,request):
         try:
-            old_ans = StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , std_course_id = request.data.get("std_course_id")).update(is_active = False)
+            StdExercise.objects.filter(exercise_id = request.data.get("exercise_id") , std_course_id = request.data.get("std_course_id")).update(is_active = False)
+        except:
+            pass
+        try:
             data = {
                 "exercise_id" : request.data.get("exercise_id"),
                 "std_course_id" : request.data.get("std_course_id"),
@@ -64,7 +67,7 @@ class uploadExerciseAns(APIView):
                 "is_active" : True,
                 "grade" : 0
             }
-            serializer = StdExerciseSerializers(data = data)
+            serializer = uploadExerciseSerializers(data = data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
