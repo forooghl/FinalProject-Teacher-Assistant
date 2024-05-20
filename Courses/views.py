@@ -76,8 +76,12 @@ class ExerciseData(APIView):
             exercise = Exercise.objects.filter(id = id)
         except:
             exercise = ''
-        exerciseSerialize = ExerciseDataSerializers(exercise, many = True)  
-        return Response({'exercise_data' : exerciseSerialize.data})
+            
+        exerciseSerialize = ExerciseDataSerializers(exercise, many = True)
+        serializer = UserSerializer(request.user, many=False)
+        user_class = StudentCourses.objects.filter(user_id = serializer.data['id'], course_id = exerciseSerialize.data[0]['courseExercise'])
+        std_class_data = StdCourseSerializers(user_class, many = True)
+        return Response({'exercise_data' : exerciseSerialize.data, "std_course" : std_class_data.data})
     
 class CourseData(APIView):
     permission_classes = (IsAuthenticated,)
