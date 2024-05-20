@@ -14,6 +14,7 @@ const Exercise = (props) => {
     const [std_course_id, setStd_course_id] = useState("");
     const [ansWindow, setAnsWindow] = useState(false);
     const [myAnswer, setMyAnswer] = useState([]);
+    const [studentAnswer, setStudentAnswer] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [endDeadline, setEndDeadline] = useState(false);
     const [file, setFile] = useState();
@@ -98,22 +99,36 @@ const Exercise = (props) => {
             .catch((err) => console.log(err));
     };
 
-    const myAnswerHandler = () => {
+    const AnswerHandler = () => {
         setAnsWindow(true);
         setIsLoading(true);
-        axios
-            .get("/students/myAnswer/", {
-                headers: { Authorization: `Bearer ${token}` },
-                params: { exercise_id: id, stdCourse_id: std_course_id[0].id },
-            })
-            .then((response) => {
-                setMyAnswer(response.data["my_answer"]);
-                setIsLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                navigate("/error", { state: error.response.status });
-            });
+        if (std_course_id[0]) {
+            axios
+                .get("/students/myAnswer/", {
+                    headers: { Authorization: `Bearer ${token}` },
+                    params: { exercise_id: id, stdCourse_id: std_course_id[0].id },
+                })
+                .then((response) => {
+                    setMyAnswer(response.data["my_answer"]);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    navigate("/error", { state: error.response.status });
+                });
+        } else {
+            axios
+                .get("/students/studentAnswer/", {
+                    headers: { Authorization: `Bearer ${token}` },
+                    params: { exercise_id: id },
+                })
+                .then((response) => {
+                    setStudentAnswer(response.data["student_answer"]);
+                    setIsLoading(false);
+                })
+                .catch((error) => {
+                    navigate("/error", { state: error.response.status });
+                });
+        }
     };
 
     const activeAnsHandler = (event) => {
@@ -191,6 +206,37 @@ const Exercise = (props) => {
                 })}
             </>
         );
+        const studentAnswerCard = (
+            <>
+                {studentAnswer.map((item) => {
+                    let file_name = item.file.replace(/media\/ExerciseAns\/|\.[^.]+$|\//gi, "");
+                    if (file_name.length > 45) {
+                        file_name = file_name.slice(0, 45) + " ...";
+                    }
+                    return (
+                        <div
+                            key={item.id}
+                            className=" h-16 w-full mx-auto px-4 flex items-center shadow shadow-independence/15 justify-between flex-nowrap hover:bg-cultured/30"
+                        >
+                            <div className="flex flex-col justify-between">
+                                <p className="font-semibold text-raisin-black line-clamp-2 overflow-hidden ">
+                                    نام فایل: <span className="text-independence text-sm ">{file_name}</span>
+                                </p>
+
+                                <p className="text-raisin-black/75 text-sm">
+                                    شماره دانشجویی:{" "}
+                                    <span className="text-independence">{item.std_course_id.std_number}</span>
+                                </p>
+                            </div>
+                            <p className="text-united-nations-blue text-sm font-semibold mr-2">
+                                {item.grade}
+                                <span className="text-queen-blue">/100</span>
+                            </p>
+                        </div>
+                    );
+                })}
+            </>
+        );
 
         return (
             <>
@@ -211,9 +257,13 @@ const Exercise = (props) => {
                             </button>
                         </div>
                         <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
-                            <button onClick={myAnswerHandler}>
+                            <button onClick={AnswerHandler}>
                                 <i className="fa-solid fa-file-import text-blue-yonder"></i>
-                                <span className="mr-2 max-md:hidden">پاسخ های من</span>
+                                {std_course_id[0] ? (
+                                    <span className="mr-2 max-md:hidden">پاسخ های من</span>
+                                ) : (
+                                    <span className="mr-2 max-md:hidden">پاسخ دانشجویان</span>
+                                )}
                             </button>
                         </div>
                     </div>
@@ -260,9 +310,19 @@ const Exercise = (props) => {
                                 </div>
                             </div>
                             {ansWindow ? (
-                                <div className="flex flex-col w-7/12 max-lg:w-11/12 max-lg:mt-4 max-lg:my-0 mx-auto py-4 px-4 h-fit ">
-                                    {myAnswerCard}
-                                </div>
+                                myAnswer.length > 0 ? (
+                                    <div className="flex flex-col w-7/12 max-lg:w-11/12 max-lg:mt-4 max-lg:my-0 mx-auto py-4 px-4 h-fit ">
+                                        {myAnswerCard}
+                                    </div>
+                                ) : studentAnswer.length > 0 ? (
+                                    <div className="flex flex-col w-7/12 max-lg:w-11/12 max-lg:mt-4 max-lg:my-0 mx-auto py-4 px-4 h-fit ">
+                                        {studentAnswerCard}
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col w-7/12 max-lg:w-11/12 max-lg:mt-4 max-lg:my-0 mx-auto py-4 px-4 h-fit ">
+                                        چیزی برای نمایش وجود ندارد
+                                    </div>
+                                )
                             ) : (
                                 <div className="flex w-1/2 max-lg:w-11/12 max-lg:mt-4 mx-auto py-4 px-4 h-fit shadow shadow-independence/15 flex-wrap md:flex-nowrap ">
                                     <div className="flex flex-col w-full">
