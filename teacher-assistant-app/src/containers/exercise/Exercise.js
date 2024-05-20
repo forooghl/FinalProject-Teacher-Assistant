@@ -12,6 +12,7 @@ const Exercise = (props) => {
     const [exercise, setExercise] = useState([]);
     const [course_id, setCourse_id] = useState("");
     const [std_course_id, setStd_course_id] = useState("");
+    const [grade_list, setGrade_list] = useState([]);
     const [ansWindow, setAnsWindow] = useState(false);
     const [myAnswer, setMyAnswer] = useState([]);
     const [studentAnswer, setStudentAnswer] = useState([]);
@@ -147,6 +148,28 @@ const Exercise = (props) => {
                 navigate("/error", { state: error.response.status });
             });
     };
+
+    const updateGradeHandler = (i, event, stdCourseID) => {
+        const newGrade_list = [...grade_list];
+        if (event.target.value > 0) {
+            newGrade_list[i] = event.target.value;
+        } else {
+            newGrade_list[i] = 0;
+        }
+        setGrade_list(newGrade_list);
+        axios
+            .put(
+                "/students/uploadExercise/",
+                { id: id, grade: newGrade_list[i], std_course_id: stdCourseID },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            )
+            .then((response) => {})
+            .catch((error) => {
+                navigate("/error", { state: error.response.status });
+            });
+    };
     if (isLoading) {
         return (
             <>
@@ -208,10 +231,10 @@ const Exercise = (props) => {
         );
         const studentAnswerCard = (
             <>
-                {studentAnswer.map((item) => {
+                {studentAnswer.map((item, index) => {
                     let file_name = item.file.replace(/media\/ExerciseAns\/|\.[^.]+$|\//gi, "");
-                    if (file_name.length > 45) {
-                        file_name = file_name.slice(0, 45) + " ...";
+                    if (file_name.length > 20) {
+                        file_name = file_name.slice(0, 20) + " ...";
                     }
                     return (
                         <div
@@ -229,8 +252,12 @@ const Exercise = (props) => {
                                 </p>
                             </div>
                             <p className="text-united-nations-blue text-sm font-semibold mr-2">
-                                {item.grade}
-                                <span className="text-queen-blue">/100</span>
+                                <input
+                                    name="grade"
+                                    className="border-2 py-1.5 text-center w-[60px]"
+                                    value={grade_list[index] || item.grade}
+                                    onChange={(event) => updateGradeHandler(index, event, item.std_course_id.id)}
+                                />
                             </p>
                         </div>
                     );
