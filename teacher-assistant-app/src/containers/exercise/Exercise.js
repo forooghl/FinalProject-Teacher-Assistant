@@ -91,11 +91,11 @@ const Exercise = (props) => {
             .catch((err) => console.log(err));
     };
 
-    const downloadFile = () => {
+    const downloadFile = (fileAdd) => {
         axios
-            .get(`${exercise[0].file}`)
+            .get(`${fileAdd}`)
             .then((response) => {
-                console.log(response);
+                // console.log(response);
             })
             .catch((err) => console.log(err));
     };
@@ -212,7 +212,13 @@ const Exercise = (props) => {
                                             id={item.id}
                                         />
                                     )}
-                                    نام فایل: <span className="text-independence text-sm ">{file_name}</span>
+                                    نام فایل:{" "}
+                                    <button
+                                        className="text-independence text-sm "
+                                        onClick={() => downloadFile(item.file)}
+                                    >
+                                        {file_name}
+                                    </button>
                                 </p>
                                 {item["is_active"] ? (
                                     <p className="text-raisin-black/75 text-sm ">فایل نهایی</p>
@@ -243,7 +249,13 @@ const Exercise = (props) => {
                         >
                             <div className="flex flex-col justify-between">
                                 <p className="font-semibold text-raisin-black line-clamp-2 overflow-hidden ">
-                                    نام فایل: <span className="text-independence text-sm ">{file_name}</span>
+                                    نام فایل:{" "}
+                                    <button
+                                        className="text-independence text-sm "
+                                        onClick={() => downloadFile(item.file)}
+                                    >
+                                        {file_name}
+                                    </button>
                                 </p>
 
                                 <p className="text-raisin-black/75 text-sm">
@@ -275,7 +287,7 @@ const Exercise = (props) => {
                                 <i className="fa-solid fa-question text-blue-yonder"></i>
                                 <span className="mr-2 max-md:hidden">تمرین</span>
                                 {exercise[0].file ? (
-                                    <button title="دانلود فایل تمرین" onClick={downloadFile}>
+                                    <button title="دانلود فایل تمرین" onClick={() => downloadFile(exercise[0].file)}>
                                         <i className="fa-solid fa-file-circle-question text-red-500 mr-2"></i>
                                     </button>
                                 ) : (
