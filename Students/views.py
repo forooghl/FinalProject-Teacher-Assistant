@@ -41,17 +41,6 @@ class myClass(APIView):
         course_serializer = CourseDataSerializers(class_data, many=True)
 
         return Response({'classes' : std_class.data, 'course_data': course_serializer.data})
-
-class studentCourseID(APIView):
-    permission_classes =  (IsAuthenticated,)
-    def get(self, request, id):
-        try: 
-            serializer = UserSerializer(request.user, many=False)
-            user_class = StudentCourses.objects.filter(user_id = serializer.data['id'], course_id = id)
-            std_class_data = StdCourseSerializers(user_class, many = True)
-            return Response({"data" : std_class_data.data})
-        except:
-            return Response({"msg" : "user id not exist ..."},status=status.HTTP_400_BAD_REQUEST)
         
 class addNewClass(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
