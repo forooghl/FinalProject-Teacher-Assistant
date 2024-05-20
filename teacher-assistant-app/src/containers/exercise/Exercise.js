@@ -11,13 +11,25 @@ const Exercise = (props) => {
 
     const [exercise, setExercise] = useState([]);
     const [course_id, setCourse_id] = useState("");
+    const [std_course_id, setStd_course_id] = useState("");
     const [ansWindow, setAnsWindow] = useState(false);
     const [myAnswer, setMyAnswer] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [endDeadline, setEndDeadline] = useState(false);
     const [file, setFile] = useState();
+    const [countDown, setCountDown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
     const navigate = useNavigate();
+
+    const [currentTime, setCurrentTime] = useState(Date.now());
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentTime(Date.now());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         async function fetchData() {
@@ -26,6 +38,7 @@ const Exercise = (props) => {
                 const response = await axios.get(`/courses/exerciseData/${id}`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                setStd_course_id(response.data.std_course);
                 setExercise(response.data.exercise_data);
                 setCourse_id(response.data.exercise_data[0].courseExercise);
                 setIsLoading(false);
@@ -36,42 +49,43 @@ const Exercise = (props) => {
         fetchData();
     }, []);
 
-    // بررسی ددلاین تمرین
+    // بررسی ددلاین تمرین و تغییر شمارش معکوس
     useEffect(() => {
         try {
-            const now = new Date().toLocaleString();
-            if (exercise[0].endDate > now) {
-                setEndDeadline(false);
-            } else {
+            const endDate = new Date(exercise[0].endDate).getTime();
+            const timeBetween = endDate - currentTime;
+            if (timeBetween < 0) {
                 setEndDeadline(true);
+                setCountDown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+            } else {
+                setEndDeadline(false);
+                setCountDown({
+                    days: Math.floor(timeBetween / (1000 * 60 * 60 * 24)),
+                    hours: Math.floor((timeBetween / (1000 * 60 * 60)) % 24),
+                    minutes: Math.floor((timeBetween / 1000 / 60) % 60),
+                    seconds: Math.floor((timeBetween / 1000) % 60),
+                });
             }
         } catch {}
-    }, [exercise]);
+    }, [currentTime]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const formData = new FormData();
+        formData.append("exercise_id", id);
+        formData.append("std_course_id", std_course_id[0].id);
+        formData.append("file", file);
+
         axios
-            .get(`/students/stdCourseID/${course_id}`, {
+            .post("/students/uploadExercise/", formData, {
+                "Content-Type": "multipart/form-data",
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                const formData = new FormData();
-                formData.append("exercise_id", id);
-                formData.append("std_course_id", response.data.data[0].id);
-                formData.append("file", file);
-
-                axios
-                    .post("/students/uploadExercise/", formData, {
-                        "Content-Type": "multipart/form-data",
-                        headers: { Authorization: `Bearer ${token}` },
-                    })
-                    .then((response) => {
-                        // TODO
-                        navigate(`/course/${course_id}`);
-                    })
-
-                    .catch((err) => console.log(err));
+                // TODO
+                navigate(`/course/${course_id}`);
             })
+
             .catch((err) => console.log(err));
     };
 
@@ -88,34 +102,26 @@ const Exercise = (props) => {
         setAnsWindow(true);
         setIsLoading(true);
         axios
-            .get(`/students/stdCourseID/${course_id}`, {
+            .get("/students/myAnswer/", {
                 headers: { Authorization: `Bearer ${token}` },
+                params: { exercise_id: id, stdCourse_id: std_course_id[0].id },
             })
             .then((response) => {
-                axios
-                    .get("/students/myAnswer/", {
-                        headers: { Authorization: `Bearer ${token}` },
-                        params: { exercise_id: id, stdCourse_id: response.data.data[0].id },
-                    })
-                    .then((response) => {
-                        setMyAnswer(response.data["my_answer"]);
-                        setIsLoading(false);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        navigate("/error", { state: error.response.status });
-                    });
+                setMyAnswer(response.data["my_answer"]);
+                setIsLoading(false);
             })
-            .catch((err) => console.log(err));
+            .catch((error) => {
+                console.log(error);
+                navigate("/error", { state: error.response.status });
+            });
     };
 
     const activeAnsHandler = (event) => {
         const ans_id = event.target.id;
-        const std_course_id = myAnswer[0].std_course_id;
         axios
             .get("/students/updateFinalAnswer/", {
                 headers: { Authorization: `Bearer ${token}` },
-                params: { exercise_id: id, std_course_id: std_course_id, id: ans_id },
+                params: { exercise_id: id, std_course_id: std_course_id[0].id, id: ans_id },
             })
             .then((response) => {
                 setMyAnswer(response.data["my_answer"]);
@@ -204,7 +210,6 @@ const Exercise = (props) => {
                                 )}
                             </button>
                         </div>
-                        {/* TODO */}
                         <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
                             <button onClick={myAnswerHandler}>
                                 <i className="fa-solid fa-file-import text-blue-yonder"></i>
@@ -213,13 +218,13 @@ const Exercise = (props) => {
                         </div>
                     </div>
 
-                    <div className="flex flex-row-reverse basis-5/6 justify-center max-md:flex-col max-md:justify-start">
-                        <div className="basis-1/10">
+                    <div className="flex flex-row-reverse basis-5/6 justify-center max-md:flex-col ">
+                        <div className="basis-1/12 self-start max-md:self-end">
                             <button
                                 onClick={() => {
                                     navigate(`/course/${course_id}`);
                                 }}
-                                className="mt-4 max-md:float-left"
+                                className="mt-4 "
                             >
                                 <i
                                     className="fa fa-arrow-left ml-16 border solid border-black rounded-full p-2"
@@ -227,48 +232,78 @@ const Exercise = (props) => {
                                 ></i>
                             </button>
                         </div>
-                        {ansWindow ? (
-                            <div className="flex flex-col basis-9/10 w-5/12 max-lg:w-4/5 max-lg:mx-0 max-lg:mt-4 max-lg:my-0 mx-auto my-10 py-4 px-4 h-fit ">
-                                {myAnswerCard}
-                            </div>
-                        ) : (
-                            <div className="flex basis-9/10 w-5/12 max-md:w-4/5 mx-auto my-10 py-4 px-4 h-fit shadow shadow-independence/15 flex-wrap md:flex-nowrap ">
-                                <div className="flex flex-col w-full">
-                                    <h1 className="font-bold text-raisin-black text-lg self-center mb-2">
-                                        {exercise[0].exerciseName}
-                                    </h1>
-                                    <p>{exercise[0].body}</p>
-                                    <div class="flex items-center px-4 my-4">
-                                        <div class="flex-1 border-t-2 border-independece/15"></div>
-                                        <span class="px-3 font-bold">بارگذاری پاسخ تمرین</span>
-                                        <div class="flex-1 border-t-2 border-independece/15"></div>
-                                    </div>
-
-                                    {endDeadline ? (
-                                        <p className="text-center text-blue-yonder">زمان پاسخ دهی به اتمام رسیده است</p>
-                                    ) : (
-                                        <form onSubmit={handleSubmit}>
-                                            <label htmlFor="uploadFile" className="block">
-                                                فایل <span className="text-red-500">*</span>
-                                            </label>
-                                            <input
-                                                id="uploadFile"
-                                                name="uploadFile"
-                                                type="file"
-                                                className="text-raisin-black/50 cursor-pointer file:cursor-pointer file:border-none file:py-1 file:px-3 file:hover:bg-blue-yonder file:hover:text-cultured file:rounded"
-                                                onChange={(event) => setFile(event.target.files[0])}
-                                            />
-                                            <button
-                                                className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
-                                                type="submit"
-                                            >
-                                                ارسال
-                                            </button>
-                                        </form>
-                                    )}
+                        <div className="flex flex-col basis-11/12">
+                            <div className="grid grid-flow-col gap-5 text-center h-fit self-end my-4 ml-8 max-lg:ml-5">
+                                <div className="flex flex-col ">
+                                    <span className="countdown text-xl">
+                                        <span>{countDown.seconds}</span>
+                                    </span>
+                                    ثانیه
+                                </div>
+                                <div className="flex flex-col ">
+                                    <span className="countdown text-xl">
+                                        <span>{countDown.minutes}</span>
+                                    </span>
+                                    دقیقه
+                                </div>
+                                <div className="flex flex-col ">
+                                    <span className="countdown text-xl">
+                                        <span>{countDown.hours}</span>
+                                    </span>
+                                    ساعت
+                                </div>
+                                <div className="flex flex-col ">
+                                    <span className="countdown text-xl">
+                                        <span>{countDown.days}</span>
+                                    </span>
+                                    روز
                                 </div>
                             </div>
-                        )}
+                            {ansWindow ? (
+                                <div className="flex flex-col w-7/12 max-lg:w-11/12 max-lg:mt-4 max-lg:my-0 mx-auto py-4 px-4 h-fit ">
+                                    {myAnswerCard}
+                                </div>
+                            ) : (
+                                <div className="flex w-1/2 max-lg:w-11/12 max-lg:mt-4 mx-auto py-4 px-4 h-fit shadow shadow-independence/15 flex-wrap md:flex-nowrap ">
+                                    <div className="flex flex-col w-full">
+                                        <h1 className="font-bold text-raisin-black text-lg self-center mb-2">
+                                            {exercise[0].exerciseName}
+                                        </h1>
+                                        <p>{exercise[0].body}</p>
+                                        <div class="flex items-center px-4 my-4">
+                                            <div class="flex-1 border-t-2 border-independece/15"></div>
+                                            <span class="px-3 font-bold">بارگذاری پاسخ تمرین</span>
+                                            <div class="flex-1 border-t-2 border-independece/15"></div>
+                                        </div>
+
+                                        {endDeadline ? (
+                                            <p className="text-center text-blue-yonder">
+                                                زمان پاسخ دهی به اتمام رسیده است
+                                            </p>
+                                        ) : (
+                                            <form onSubmit={handleSubmit}>
+                                                <label htmlFor="uploadFile" className="block">
+                                                    فایل <span className="text-red-500">*</span>
+                                                </label>
+                                                <input
+                                                    id="uploadFile"
+                                                    name="uploadFile"
+                                                    type="file"
+                                                    className="text-raisin-black/50 cursor-pointer file:cursor-pointer file:border-none file:py-1 file:px-3 file:hover:bg-blue-yonder file:hover:text-cultured file:rounded"
+                                                    onChange={(event) => setFile(event.target.files[0])}
+                                                />
+                                                <button
+                                                    className="flex w-32 justify-center rounded-md bg-queen-blue mt-4 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-yonder focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-yonder"
+                                                    type="submit"
+                                                >
+                                                    ارسال
+                                                </button>
+                                            </form>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </main>
             </>
