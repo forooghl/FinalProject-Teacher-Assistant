@@ -138,7 +138,7 @@ const CourseView = (props) => {
                                             <i className="fa fa-plus rounded-full px-2 py-1 text-sm bg-blue-yonder hover:bg-tufts-blue text-cultured"></i>
                                         </button>
                                     </div>
-                                    {practice ? (
+                                    {practice.props.children.length > 0 ? (
                                         <div className="border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
                                             {practice}
                                         </div>
