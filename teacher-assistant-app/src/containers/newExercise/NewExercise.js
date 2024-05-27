@@ -76,7 +76,7 @@ const NewExercise = () => {
             </button>
             <div className="lg:px-8 w-full mt-4 m-auto">
                 <h3 className="mr-8 text-2xl font-bold leading-9 tracking-tight text-raisin-black mb-6 text-center">
-                    ایجاد کلاس جدید
+                    افزودن تمرین جدید
                 </h3>
                 <div className="sm:w-full px-8 overflow-hidden">
                     <form onSubmit={handleSubmit}>
