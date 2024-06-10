@@ -122,7 +122,39 @@ const CourseView = (props) => {
                                 <Card title="درس در یک نگاه" items={classDetail} cardType="class" />
                             </div>
                             <div className="w-3/12  max-md:w-10/12">
-                                <Card title="اطلاع رسانی" items={practice} cardType="practice" />
+                                {isProfessor ? (
+                                    <Card
+                                        title="ارزشیابی"
+                                        items={
+                                            <>
+                                                <CardItem
+                                                    title="نمره دهی به دانشجویان درس"
+                                                    teacherName=""
+                                                    date=""
+                                                    id=""
+                                                    linkURL="grading"
+                                                />
+                                            </>
+                                        }
+                                        cardType="evaluation"
+                                    />
+                                ) : (
+                                    <Card
+                                        title="ارزشیابی"
+                                        items={
+                                            <>
+                                                <CardItem
+                                                    title="مشاهده نتیجه ارزشیابی دستیاران آموزشی"
+                                                    teacherName=""
+                                                    date=""
+                                                    id=""
+                                                    linkURL="evalResult"
+                                                />
+                                            </>
+                                        }
+                                        cardType="evaluation"
+                                    />
+                                )}
                             </div>
                             <div className="w-4/12  max-md:w-10/12">
                                 <div className="flex flex-col">
@@ -174,7 +206,21 @@ const CourseView = (props) => {
                                 <Card title="درس در یک نگاه" items={classDetail} cardType="class" />
                             </div>
                             <div className="w-3/12  max-md:w-10/12">
-                                <Card title="اطلاع رسانی" items={practice} cardType="practice" />
+                                <Card
+                                    title="ارزشیابی"
+                                    items={
+                                        <>
+                                            <CardItem
+                                                title="ارزشیابی دستیاران آموزشی"
+                                                teacherName=""
+                                                date=""
+                                                id=""
+                                                linkURL="evaluation"
+                                            />
+                                        </>
+                                    }
+                                    cardType="evaluation"
+                                />
                             </div>
                             <div className="w-4/12  max-md:w-10/12">
                                 <Card title="تمرین ها" items={practice} cardType="practice" />
@@ -187,7 +233,7 @@ const CourseView = (props) => {
 
         // should join the class
         else {
-            navigate(`/joinClass/${id}`, { state: {user_id : user_id, course_pass : course[0].password} });
+            navigate(`/joinClass/${id}`, { state: { user_id: user_id, course_pass: course[0].password } });
         }
     }
 };
