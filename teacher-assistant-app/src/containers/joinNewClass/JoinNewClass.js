@@ -21,11 +21,11 @@ const JoinNewClass = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (password === course_pass) {
+        if (password === course_pass || password == "") {
             axios
                 .post(
                     "/students/addNewClass/",
-                    { std_number: stdNumber, user_id: user_id, course_id: id },
+                    { std_number: stdNumber, user_id: user_id, course_id: id},
                     {
                         headers: { Authorization: `Bearer ${token}` },
                     }
