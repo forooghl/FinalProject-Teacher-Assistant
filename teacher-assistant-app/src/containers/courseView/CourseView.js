@@ -209,7 +209,7 @@ const CourseView = (props) => {
                                 <Card
                                     title="ارزشیابی"
                                     items={
-                                        <Link to="/evaluation" state={{Ta : course[0].Ta}}>
+                                        <Link to="/evaluation" state={{ Ta: course[0].Ta, course_id: id }}>
                                             <div className="h-16 mx-auto px-4 flex items-center shadow shadow-independence/15 justify-between flex-wrap md:flex-nowrap hover:bg-cultured/30">
                                                 <div className="flex flex-col">
                                                     <p className="font-semibold text-raisin-black">
