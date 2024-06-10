@@ -39,13 +39,15 @@ class addCourse(APIView):
         except: # if just have one TA
             item = list(UserProfile.objects.filter(email = request.data.get('Ta')).values('id'))
             Ta.append(item[0]['id'])
-        
+
         data = {
             'courseName' : request.data.get("courseName"),
+            'password' : request.data.get("password"),
             'date' : request.data.get("date"),
             'professor' : professor[0]['id'],
-            'Ta' : Ta  
+            'Ta' : Ta,
         }
+            
         serializer = CourseSerializers(data = data)
         
         if serializer.is_valid():

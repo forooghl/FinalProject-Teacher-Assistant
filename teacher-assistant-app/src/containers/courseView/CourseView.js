@@ -187,7 +187,7 @@ const CourseView = (props) => {
 
         // should join the class
         else {
-            navigate(`/joinClass/${id}`, { state: user_id });
+            navigate(`/joinClass/${id}`, { state: {user_id : user_id, course_pass : course[0].password} });
         }
     }
 };

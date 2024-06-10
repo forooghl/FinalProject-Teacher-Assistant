@@ -13,6 +13,7 @@ const NewClass = () => {
     const [userEmail, setUserEmail] = useState("");
     const [professorEmail, setProfessorEmail] = useState("");
     const [courseName, setCourseName] = useState("");
+    const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
     useEffect(() => {
@@ -61,7 +62,7 @@ const NewClass = () => {
         axios
             .post(
                 "/courses/addCourse/",
-                { courseName, date, professor: professorEmail, Ta: Ta_list },
+                { courseName, password, date, professor: professorEmail, Ta: Ta_list },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
@@ -99,6 +100,16 @@ const NewClass = () => {
                                 value={courseName}
                                 className="rounded-l border-b-2  border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
                                 onChange={(event) => setCourseName(event.target.value)}
+                            />
+                        </div>
+                        <div className="mt-8">
+                            <input
+                                id="password"
+                                type="text"
+                                placeholder="اگر مایل هستید برای درس رمز عبور تعریف کنید"
+                                value={password}
+                                className="rounded-l border-b-2  border-raisin-black/50 py-1 pr-2 placeholder:text-raisin-black-25 text-raisin-black focus:border-blue-yonder sm:text-sm sm:leading-6"
+                                onChange={(event) => setPassword(event.target.value)}
                             />
                         </div>
                         <div className="mt-8">

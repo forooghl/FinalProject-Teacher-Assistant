@@ -7,6 +7,7 @@ from Authentication.models import UserProfile
 # Create your models here.   
 class Course(models.Model):
     courseName = models.CharField(max_length = 50)
+    password = models.CharField(max_length=20, blank=True)
     date = models.DateField()
     professor = models.ForeignKey(UserProfile, related_name ='professor_ID', on_delete = models.CASCADE)
     Ta = models.ManyToManyField(UserProfile)
