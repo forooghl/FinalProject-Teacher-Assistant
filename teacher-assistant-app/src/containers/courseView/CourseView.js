@@ -131,7 +131,7 @@ const CourseView = (props) => {
                                                     title="نمره دهی به دانشجویان درس"
                                                     teacherName=""
                                                     date=""
-                                                    id=""
+                                                    id={id}
                                                     linkURL="grading"
                                                 />
                                             </>
