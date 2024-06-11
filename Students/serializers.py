@@ -10,7 +10,13 @@ class StdCourseSerializers(serializers.ModelSerializer):
     class Meta:
         model = StudentCourses
         fields = '__all__'
-        
+
+class CourseStudentsSerializers(serializers.ModelSerializer):
+    user_id = serializers.StringRelatedField(read_only = True)
+    class Meta:
+        model = StudentCourses
+        fields = '__all__'
+                
 class myCourseSerializers(serializers.ModelSerializer):
     class Meta:
         model = StudentCourses
