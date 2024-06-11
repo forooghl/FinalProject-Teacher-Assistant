@@ -12,6 +12,14 @@ class StudentCourses(models.Model):
     user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
 
+class Evaluation(models.Model):
+    user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    ta_id = models.ForeignKey(UserProfile, related_name="ta_id", on_delete=models.CASCADE)
+    course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
+    teaching_skill = models.IntegerField()
+    manner_skill = models.IntegerField()
+    mastery_skill = models.IntegerField()
+    answeringQuestion_skill = models.IntegerField()
 
 class StdExercise(models.Model):
     exercise_id = models.ForeignKey(Exercise, on_delete=models.CASCADE)
