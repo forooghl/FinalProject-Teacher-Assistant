@@ -11,10 +11,39 @@ from Authentication.serializers import UserSerializer
 from Courses.models import Course
 from Courses.serializers import CourseDataSerializers
 
-from .models import StudentCourses, StdExercise
-from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers, uploadExerciseSerializers
+from .models import StudentCourses, StdExercise, Evaluation
+from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers, uploadExerciseSerializers, taEvaluationSerializers
 
-
+class taEvaluation(APIView):
+    def get(self, request):
+        evaluation = Evaluation.objects.all()
+        serializer_class = taEvaluationSerializers(evaluation, many = True)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        try :
+            ta = UserProfile.objects.get(fullName = request.data.get("Ta"))
+        except:
+            ta = UserProfile.objects.get(username = request.data.get("Ta"))
+        
+        user_serializer = UserSerializer(request.user, many=False)
+        TA_user_serializer = UserSerializer(ta, many=False)
+        data = {
+                "user_id" : user_serializer.data['id'],
+                "ta_id" : TA_user_serializer.data["id"],
+                "course_id" : request.data.get("course_id"),
+                "teaching_skill" : request.data.get("teaching_skill"),
+                "mastery_skill" : request.data.get("mastery_skill"),
+                "manner_skill" : request.data.get("manner_skill"),
+                "answeringQuestion_skill" : request.data.get("answeringQuestion_skill"),
+            }
+        serializer = taEvaluationSerializers(data = data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 class joinOrNot(APIView):
     # permission_classes = (IsAuthenticated,)
     def get(self, request, id):
