@@ -5,6 +5,9 @@ import axios from "../axios";
 import { Loader } from "../../ui/loader/Loader";
 
 const Evaluation = () => {
+    const refresh = localStorage.getItem("refresh");
+    const token = localStorage.getItem("token");
+    const navigate = useNavigate();
     const location = useLocation();
     const { Ta, course_id } = location.state;
     const [selectedTa, setSelectedTa] = useState("");
@@ -25,14 +28,27 @@ const Evaluation = () => {
                 setError({ status: true, msg: "skill" });
             else {
                 setError(false);
-                const sendData = {
-                    Ta: selectedTa,
-                    teaching_skill,
-                    mastery_skill,
-                    manner_skill,
-                    answeringQuestion_skill,
-                    course_id,
-                };
+                axios
+                    .post(
+                        "/students/evaluation/",
+                        {
+                            Ta: selectedTa,
+                            teaching_skill,
+                            mastery_skill,
+                            manner_skill,
+                            answeringQuestion_skill,
+                            course_id,
+                        },
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    )
+                    .then((request) => {
+                        navigate(`/course/${course_id}`);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             }
         } else {
             setError({ status: true, msg: "Ta" });
