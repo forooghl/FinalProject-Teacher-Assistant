@@ -12,7 +12,7 @@ from Courses.models import Course
 from Courses.serializers import CourseDataSerializers
 
 from .models import StudentCourses, StdExercise, Evaluation
-from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers, uploadExerciseSerializers, taEvaluationSerializers
+from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers, uploadExerciseSerializers, taEvaluationSerializers, CourseStudentsSerializers
 
 class taEvaluation(APIView):
     def get(self, request):
@@ -124,6 +124,16 @@ class myAns(APIView):
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
+class courseStudents(APIView):
+    def get(self, request, id):
+        allStudent = StudentCourses.objects.filter(course_id = id)
+        serializer = CourseStudentsSerializers(allStudent, many= True)
+        return Response({"allStudent" : serializer.data}, status=status.HTTP_200_OK)
+        # try:
+            
+        # except:
+        #     return Response(status=status.HTTP_400_BAD_REQUEST)
+           
 class studentAns(APIView):
     permission_classes =  (IsAuthenticated,)
     def get(self, request):
