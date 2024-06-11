@@ -1,7 +1,11 @@
 from rest_framework import serializers
-from .models import StudentCourses, StdExercise
+from .models import StudentCourses, StdExercise, Evaluation
 
-
+class taEvaluationSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Evaluation
+        fields = "__all__"
+        
 class StdCourseSerializers(serializers.ModelSerializer):
     class Meta:
         model = StudentCourses
