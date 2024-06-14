@@ -28,6 +28,10 @@ class taEvaluation(APIView):
         
         user_serializer = UserSerializer(request.user, many=False)
         TA_user_serializer = UserSerializer(ta, many=False)
+        
+        if Evaluation.objects.filter(user_id = user_serializer.data['id'], ta_id = TA_user_serializer.data["id"], course_id = request.data.get("course_id")).exists():
+            return Response({"msg" : "شما قبلا در نظر سنجی شرکت کرده اید"})
+        
         data = {
                 "user_id" : user_serializer.data['id'],
                 "ta_id" : TA_user_serializer.data["id"],

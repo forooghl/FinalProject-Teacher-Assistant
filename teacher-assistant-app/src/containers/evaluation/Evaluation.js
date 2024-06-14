@@ -43,8 +43,10 @@ const Evaluation = () => {
                             headers: { Authorization: `Bearer ${token}` },
                         }
                     )
-                    .then((request) => {
-                        navigate(`/course/${course_id}`);
+                    .then((response) => {
+                        if (response.data.msg == "شما قبلا در نظر سنجی شرکت کرده اید")
+                            alert("شما قبلا در ارزشیابی این دستیار آموزشی شرکت کرده اید");
+                        else navigate(`/course/${course_id}`);
                     })
                     .catch((err) => {
                         console.log(err);
