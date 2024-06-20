@@ -1,4 +1,6 @@
 import sys
+import joblib
+import numpy as np
 sys.path.append("..") # Adds higher directory to python modules path.
 from django.shortcuts import render
 from rest_framework.views import APIView
@@ -14,6 +16,91 @@ from Courses.serializers import CourseDataSerializers
 from .models import StudentCourses, StdExercise, Evaluation
 from .serializers import StdCourseSerializers, StdExerciseSerializers, myCourseSerializers, uploadExerciseSerializers, taEvaluationSerializers, CourseStudentsSerializers
 
+
+# Load the trained KNN model
+model = joblib.load('G:\Project\Final Project\Teacher Assistant\Recommender System\knn_model.joblib')
+def TA_recommender(ta_evaluation):
+    # delete duplicate
+    ta_evaluation_dict = {}
+    keys = ta_evaluation.keys()
+    for k in keys:
+        ta_evaluation_dict[k] = []
+        for item in ta_evaluation[k]:
+            if item in ta_evaluation_dict[k]:
+                pass
+            else: 
+                ta_evaluation_dict[k].append(item)
+                
+    evaluation = {}
+    for k in keys:
+        Ta_info = UserProfile.objects.filter(id = k.split('_')[1])
+        if list(Ta_info.values("fullName")) == [{'fullName': None}]:
+            ta = list(Ta_info.values("username"))[0]['username']
+        else:
+            ta = list(Ta_info.values("fullName"))[0]['fullName']
+        teaching_skill = 0
+        mastery_skill = 0
+        manner_skill = 0
+        answeringQuestion_skill = 0
+        for item in ta_evaluation_dict[k]:
+            serializer_evaluation = taEvaluationSerializers(item)
+            teaching_skill += serializer_evaluation.data['teaching_skill']
+            mastery_skill += serializer_evaluation.data['mastery_skill']
+            manner_skill += serializer_evaluation.data['manner_skill']
+            answeringQuestion_skill += serializer_evaluation.data['answeringQuestion_skill']
+            
+        try: 
+            teaching_skill /= len(ta_evaluation_dict[k])
+        except ZeroDivisionError:
+            teaching_skill = 0
+        try: 
+            mastery_skill /= len(ta_evaluation_dict[k])
+        except ZeroDivisionError:
+            mastery_skill = 0
+        try: 
+            manner_skill /= len(ta_evaluation_dict[k])
+        except ZeroDivisionError:
+            manner_skill = 0
+        try: 
+            answeringQuestion_skill /= len(ta_evaluation_dict[k])
+        except ZeroDivisionError:
+            answeringQuestion_skill = 0
+            
+        data = np.array([teaching_skill, mastery_skill, manner_skill, answeringQuestion_skill], dtype=float).reshape(1,-1)
+        y_pred = model.predict(data)
+        
+        if y_pred == 1:
+            evaluation[ta] = {"evaluation":"عالی", "email":list(Ta_info.values("email"))[0]['email']}
+        elif y_pred == 0:
+            evaluation[ta] = {"evaluation":"متوسط", "email":list(Ta_info.values("email"))[0]['email']}
+        else:
+            evaluation[ta] = {"evaluation":"ضعیف", "email":list(Ta_info.values("email"))[0]['email']}
+    return evaluation
+    
+class recommenderSystem(APIView):
+    def get(self, request):
+        course_title = request.query_params['title']
+        Courses_id = Course.objects.filter(courseName = course_title).values_list("id", flat=True)
+        ta_evaluation_dict = {}
+        for id in Courses_id:
+            ta_evaluation = Evaluation.objects.filter(course_id = id)
+            
+            ta_id = ta_evaluation.values_list('ta_id', flat=True)
+            for t_id in ta_id:
+                try:
+                    temp = []
+                    for i in ta_evaluation_dict[f"TA_{t_id}"]:
+                        temp.append(i)
+                    for i in list(Evaluation.objects.filter(course_id = id, ta_id = t_id)):
+                        temp.append(i)
+                except KeyError:
+                    temp = list(Evaluation.objects.filter(course_id = id, ta_id = t_id))
+                ta_evaluation_dict[f"TA_{t_id}"] = temp
+
+        recommender = TA_recommender(ta_evaluation_dict)
+        
+        return Response(recommender)
+    
 class taEvaluation(APIView):
     def get(self, request):
         evaluation = Evaluation.objects.all()
