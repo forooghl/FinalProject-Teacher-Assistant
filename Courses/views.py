@@ -56,6 +56,19 @@ class addCourse(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+class updateCourse(APIView):
+    def delete(self,request,id):
+        try:
+            course = Course.objects.get(id = id)
+            course.delete()
+            return Response({"msg" : "درس مورد نظر با موفقیت حذف شد"}, status=status.HTTP_200_OK)
+        except:
+            return Response({"msg" : "حذف با مشکل رو به رو شده است"}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+    def put(self,request):
+        pass
+    
 class addExercise(generics.ListCreateAPIView):
     queryset = Exercise.objects.all()
     permission_classes = (IsAuthenticated,)
