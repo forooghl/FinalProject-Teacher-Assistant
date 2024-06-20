@@ -62,6 +62,22 @@ const CourseView = (props) => {
         fetchData();
     }, []);
 
+    const deleteCourseHandler = () => {
+        axios
+            .delete(`/courses/updateCourse/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                alert(response.data.msg);
+                navigate("/");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    const updateCourseHandler = () => {};
+
     if (isLoading) {
         return (
             <>
@@ -106,6 +122,40 @@ const CourseView = (props) => {
 
         // can edit class settings and add exercise
         if (isProfessor || isTA) {
+            const classDetail = (
+                <div className="text-center text-raisin-black mt-2">
+                    <h1 className="font-bold text-xl mb-2">{course[0].courseName}</h1>
+                    <h2 className=" text-sm">{course[0].professor}</h2>
+
+                    <div class="flex items-center px-4 my-2">
+                        <div class="flex-1 border-t-2 border-independece/15"></div>
+                        <span class="px-3 font-bold">دستیاران آموزشی</span>
+                        <div class="flex-1 border-t-2 border-independece/15"></div>
+                    </div>
+
+                    <div className="text-sm">
+                        {course[0].Ta.map((items) => {
+                            return <p className="mb-2">{items}</p>;
+                        })}
+                    </div>
+
+                    <div class="flex items-center px-4 my-2">
+                        <div class="flex-1 border-t-2 border-independece/15"></div>
+                        <span class="px-3 font-bold">تنظیمات کلاس</span>
+                        <div class="flex-1 border-t-2 border-independece/15"></div>
+                    </div>
+                    <div className="text-sm font-semibold flex flex-col">
+                        <button onClick={deleteCourseHandler} className="text-right mr-4">
+                            <i className="fa-solid fa-trash text-blue-yonder ml-2"></i>
+                            حذف کلاس
+                        </button>
+                        <button onClick={updateCourseHandler} className="text-right mr-4">
+                            <i className="fa-regular fa-pen-to-square text-blue-yonder ml-2"></i>
+                            به روز رسانی اطلاعات کلاس
+                        </button>
+                    </div>
+                </div>
+            );
             if (isLoading) {
                 return (
                     <>
