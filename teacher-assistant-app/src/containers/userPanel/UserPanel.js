@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../axios";
-import Card from "../../component/Card/Card";
 import CardItem from "../../component/CardItem/CardItem";
 import Navbar from "../../component/Navbar/Navbar";
 import { Loader } from "../../ui/loader/Loader";
@@ -266,7 +265,7 @@ const UserPanel = () => {
                     ) : (
                         <div className="pr-8 mt-8 w-full">
                             <h1 className="font-semibold text-xl">کلاس دانشجویان</h1>
-                            {TaCourse ? (
+                            {TaCourse.props.children.length > 0 ? (
                                 <div className="w-1/2 mt-2 mr-4 border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
                                     {TaCourse}
                                     {professorCourse}
