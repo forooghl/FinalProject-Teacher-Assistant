@@ -31,7 +31,7 @@ def TA_recommender(ta_evaluation):
             else: 
                 ta_evaluation_dict[k].append(item)
                 
-    evaluation = {}
+    evaluation = []
     for k in keys:
         Ta_info = UserProfile.objects.filter(id = k.split('_')[1])
         if list(Ta_info.values("fullName")) == [{'fullName': None}]:
@@ -69,12 +69,7 @@ def TA_recommender(ta_evaluation):
         data = np.array([teaching_skill, mastery_skill, manner_skill, answeringQuestion_skill], dtype=float).reshape(1,-1)
         y_pred = model.predict(data)
         
-        if y_pred == 1:
-            evaluation[ta] = {"evaluation":"عالی", "email":list(Ta_info.values("email"))[0]['email']}
-        elif y_pred == 0:
-            evaluation[ta] = {"evaluation":"متوسط", "email":list(Ta_info.values("email"))[0]['email']}
-        else:
-            evaluation[ta] = {"evaluation":"ضعیف", "email":list(Ta_info.values("email"))[0]['email']}
+        evaluation.append({"name" : ta, "evaluation":y_pred[0], "email":list(Ta_info.values("email"))[0]['email']})
     return evaluation
     
 class recommenderSystem(APIView):
