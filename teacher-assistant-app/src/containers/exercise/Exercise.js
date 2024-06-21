@@ -170,6 +170,20 @@ const Exercise = (props) => {
                 navigate("/error", { state: error.response.status });
             });
     };
+
+    const deleteExerciseHandler = () => {
+        axios
+            .delete(`/courses/updateExercise/${id}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                alert(response.data.msg);
+                navigate(`/course/${course_id}`);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
     if (isLoading) {
         return (
             <>
@@ -305,6 +319,24 @@ const Exercise = (props) => {
                                 )}
                             </button>
                         </div>
+                        {std_course_id[0] ? (
+                            <></>
+                        ) : (
+                            <>
+                                <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
+                                    <button onClick={deleteExerciseHandler}>
+                                        <i className="fa-solid fa-trash text-blue-yonder ml-2"></i>
+                                        <span className="mr-2 max-md:hidden">حذف تمرین</span>
+                                    </button>
+                                </div>
+                                <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
+                                    <button onClick={AnswerHandler}>
+                                        <i className="fa-regular fa-pen-to-square text-blue-yonder ml-2"></i>
+                                        <span className="mr-2 max-md:hidden">به روز رسانی تمرین</span>
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
 
                     <div className="flex flex-row-reverse basis-5/6 justify-center max-md:flex-col ">
