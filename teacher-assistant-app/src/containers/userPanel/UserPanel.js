@@ -265,7 +265,7 @@ const UserPanel = () => {
                     ) : (
                         <div className="pr-8 mt-8 w-full">
                             <h1 className="font-semibold text-xl">کلاس دانشجویان</h1>
-                            {TaCourse.props.children.length > 0 ? (
+                            {TaCourse.props.children.length > 0 || professorCourse.props.children.length > 0 ? (
                                 <div className="w-1/2 mt-2 mr-4 border-solid border border-rich-black-fogra-29/10 shadow rounded-md max-md:mb-8">
                                     {TaCourse}
                                     {professorCourse}
