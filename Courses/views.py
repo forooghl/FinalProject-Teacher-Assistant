@@ -64,10 +64,6 @@ class updateCourse(APIView):
             return Response({"msg" : "درس مورد نظر با موفقیت حذف شد"}, status=status.HTTP_200_OK)
         except:
             return Response({"msg" : "حذف با مشکل رو به رو شده است"}, status=status.HTTP_404_NOT_FOUND)
-        
-        
-    def put(self,request):
-        pass
     
 class addExercise(generics.ListCreateAPIView):
     queryset = Exercise.objects.all()
@@ -82,9 +78,6 @@ class updateExercise(APIView):
             return Response({"msg" : "تمرین مورد نظر با موفقیت حذف شد"}, status=status.HTTP_200_OK)
         except:
             return Response({"msg" : "حذف با مشکل رو به رو شده است"}, status=status.HTTP_404_NOT_FOUND)
-        
-    def put(self,request):
-        pass
     
 class courseExercise(APIView):
     permission_classes = (IsAuthenticated,)
