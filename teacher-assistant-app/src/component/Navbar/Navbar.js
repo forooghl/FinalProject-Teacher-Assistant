@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import Logo from "../../assets/img/Logo.png";
 import axios from "../../containers/axios";
 
@@ -10,6 +10,9 @@ const Navbar = (props) => {
 
     const [profile, setProfile] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isProfessor, setIsProfessor] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchData() {
@@ -23,6 +26,15 @@ const Navbar = (props) => {
                 } catch (error) {
                     Promise.reject(error);
                     // navigate("/error404");
+                }
+                try {
+                    const response = await axios.get("/courses/professorCourse", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+                    if (response.data.classes.length > 0) setIsProfessor(true);
+                    setIsLoading(false);
+                } catch (error) {
+                    navigate("/error", { state: error.response.status });
                 }
             }
         }
@@ -44,6 +56,13 @@ const Navbar = (props) => {
                             <li className="md:px-4 md:py-2 text-queen-blue font-bold">
                                 <NavLink to="/">داشبورد</NavLink>
                             </li>
+                            {isProfessor ? (
+                                <li className="md:px-4 md:py-2 hover:text-blue-yonder">
+                                    <NavLink to="/TaRS">پیشنهاد دستیار آموزشی</NavLink>
+                                </li>
+                            ) : (
+                                <></>
+                            )}
                             <li class="md:px-4 md:py-2 hover:text-blue-yonder">
                                 <NavLink href="/">ارتباط با ما</NavLink>
                             </li>
@@ -58,10 +77,15 @@ const Navbar = (props) => {
                                         <div className="fa-layers fa-fw fa-2xl hover:text-blue-yonder">
                                             <i className="fa fa-user-circle" title="صفحه شخصی"></i>
                                         </div>
-                                    ) : (
+                                    ) : profile.avatar ? (
                                         <img
                                             className=" w-12 h-12 rounded-full"
                                             src={`http://127.0.0.1:8000${profile.avatar}`}
+                                        />
+                                    ) : (
+                                        <img
+                                            className=" w-12 h-12 rounded-full"
+                                            src={`http://127.0.0.1:8000/media/Profile/default.png`}
                                         />
                                     )}
                                 </div>
