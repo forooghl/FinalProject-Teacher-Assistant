@@ -170,9 +170,10 @@ const UserPanel = () => {
                                     src={`http://127.0.0.1:8000${profile.avatar}`}
                                 />
                             ) : (
-                                <div className="fa-layers fa-fw fa-2xl text-blue-yonder">
-                                    <i className="fa fa-user-circle" title="صفحه شخصی"></i>
-                                </div>
+                                <img
+                                    className=" w-16 h-16 rounded-full"
+                                    src={`http://127.0.0.1:8000/media/Profile/default.png`}
+                                />
                             )}
 
                             {profile.fullName ? (
