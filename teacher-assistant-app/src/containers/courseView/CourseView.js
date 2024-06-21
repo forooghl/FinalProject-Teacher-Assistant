@@ -76,8 +76,6 @@ const CourseView = (props) => {
             });
     };
 
-    const updateCourseHandler = () => {};
-
     if (isLoading) {
         return (
             <>
@@ -144,14 +142,10 @@ const CourseView = (props) => {
                         <span class="px-3 font-bold">تنظیمات کلاس</span>
                         <div class="flex-1 border-t-2 border-independece/15"></div>
                     </div>
-                    <div className="text-sm font-semibold flex flex-col">
+                    <div className="text-sm font-semibold flex flex-col mb-2">
                         <button onClick={deleteCourseHandler} className="text-right mr-4">
                             <i className="fa-solid fa-trash text-blue-yonder ml-2"></i>
                             حذف کلاس
-                        </button>
-                        <button onClick={updateCourseHandler} className="text-right mr-4">
-                            <i className="fa-regular fa-pen-to-square text-blue-yonder ml-2"></i>
-                            به روز رسانی اطلاعات کلاس
                         </button>
                     </div>
                 </div>

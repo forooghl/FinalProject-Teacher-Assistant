@@ -329,12 +329,6 @@ const Exercise = (props) => {
                                         <span className="mr-2 max-md:hidden">حذف تمرین</span>
                                     </button>
                                 </div>
-                                <div className="py-3 pr-4 shadow shadow-independence/15 hover:bg-cultured/30">
-                                    <button onClick={AnswerHandler}>
-                                        <i className="fa-regular fa-pen-to-square text-blue-yonder ml-2"></i>
-                                        <span className="mr-2 max-md:hidden">به روز رسانی تمرین</span>
-                                    </button>
-                                </div>
                             </>
                         )}
                     </div>
