@@ -26,7 +26,7 @@ class Routers extends React.Component {
                 <Route path="/addExercise" exact element={<NewExercise />} />
                 <Route path="/course/:id" exact element={<CourseView />} />
                 <Route path="/evaluation" exact element={<Evaluation />} />
-                <Route path="/grading" exact element={<Grading />} />
+                <Route path="/grading/:id" exact element={<Grading />} />
                 <Route path="/TaRS" exact element={<RecommenderSystem />} />
                 <Route path="/joinClass/:id" exact element={<JoinNewClass />} />
                 <Route path="/practice/:id" exact element={<Exercise />} />
