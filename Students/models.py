@@ -8,7 +8,7 @@ from Courses.models import Course, Exercise
 
 class StudentCourses(models.Model):
     std_number = models.IntegerField()
-    grade = models.IntegerField(default=0, blank=True)
+    grade = models.FloatField(default=0, blank=True)
     user_id = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     course_id = models.ForeignKey(Course, on_delete=models.CASCADE)
 
