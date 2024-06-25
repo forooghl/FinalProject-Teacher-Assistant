@@ -96,7 +96,41 @@ class recommenderSystem(APIView):
         
         return Response(recommender)
     
+class evaluationResult(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self,request):
+        try:
+            teaching_skill = 0
+            mastery_skill = 0
+            manner_skill = 0
+            answeringQuestion_skill = 0
+            
+            serializer = UserSerializer(request.user, many=False)
+            evaluationList = Evaluation.objects.filter(ta_id = serializer.data["id"], course_id = request.query_params['course_id'])
+            eval_serializer = taEvaluationSerializers(evaluationList, many=True)
+            
+            for i in eval_serializer.data:
+                teaching_skill += int(i["teaching_skill"])
+                mastery_skill += int(i["mastery_skill"])
+                manner_skill += int(i["manner_skill"])
+                answeringQuestion_skill += int(i["answeringQuestion_skill"])
+                
+            teaching_skill /= len(eval_serializer.data)
+            mastery_skill /= len(eval_serializer.data)
+            manner_skill /= len(eval_serializer.data)
+            answeringQuestion_skill /= len(eval_serializer.data)
+            return Response({"teaching_skill": teaching_skill, 
+                            "manner_skill": manner_skill, 
+                            "mastery_skill": mastery_skill, 
+                            "answeringQuestion_skill": answeringQuestion_skill}, status=status.HTTP_200_OK)
+              
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        
+        
 class taEvaluation(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request):
         evaluation = Evaluation.objects.all()
         serializer_class = taEvaluationSerializers(evaluation, many = True)
