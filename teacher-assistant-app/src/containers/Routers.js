@@ -15,6 +15,7 @@ import Error from "./error/Error";
 import Evaluation from "./evaluation/Evaluation";
 import Grading from "./grading/Grading";
 import RecommenderSystem from "./recommenderSystem/RecommenderSystem";
+import EvaluationResult from "./evaluationResult/EvaluationResult";
 
 class Routers extends React.Component {
     render() {
@@ -26,6 +27,7 @@ class Routers extends React.Component {
                 <Route path="/addExercise" exact element={<NewExercise />} />
                 <Route path="/course/:id" exact element={<CourseView />} />
                 <Route path="/evaluation" exact element={<Evaluation />} />
+                <Route path="/evalResult/:id" exact element={<EvaluationResult />} />
                 <Route path="/grading/:id" exact element={<Grading />} />
                 <Route path="/TaRS" exact element={<RecommenderSystem />} />
                 <Route path="/joinClass/:id" exact element={<JoinNewClass />} />
