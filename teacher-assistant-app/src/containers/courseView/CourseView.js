@@ -191,7 +191,7 @@ const CourseView = (props) => {
                                                     title="مشاهده نتیجه ارزشیابی دستیاران آموزشی"
                                                     teacherName=""
                                                     date=""
-                                                    id=""
+                                                    id={id}
                                                     linkURL="evalResult"
                                                 />
                                             </>
