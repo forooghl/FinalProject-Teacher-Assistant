@@ -209,16 +209,6 @@ class myAns(APIView):
             return Response({"my_answer" : serializer.data}, status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
-class courseStudents(APIView):
-    def get(self, request, id):
-        allStudent = StudentCourses.objects.filter(course_id = id)
-        serializer = CourseStudentsSerializers(allStudent, many= True)
-        return Response({"allStudent" : serializer.data}, status=status.HTTP_200_OK)
-        # try:
-            
-        # except:
-        #     return Response(status=status.HTTP_400_BAD_REQUEST)
            
 class studentAns(APIView):
     permission_classes =  (IsAuthenticated,)
@@ -242,3 +232,22 @@ class updateFinalAns(APIView):
             return Response({"my_answer" : serializer.data}, status=status.HTTP_200_OK) 
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+class grading(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        try:
+            studentCourse = StudentCourses.objects.filter(course_id = request.query_params["course_id"])
+            serializers = StdCourseSerializers(studentCourse, many = True)
+            return Response({"students" : serializers.data}, status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    def put(self, request):
+        try:
+            stdObj = StudentCourses.objects.get(course_id = request.data['id'], user_id = request.data['student_id'])
+            stdObj.grade = request.data['grade']
+            stdObj.save()
+            return Response({'message': 'student grade updated successfully'}, status=status.HTTP_200_OK)
+        except:
+            return Response( status=status.HTTP_400_BAD_REQUEST)
+        
