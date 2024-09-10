@@ -16,12 +16,14 @@ import Evaluation from "./evaluation/Evaluation";
 import Grading from "./grading/Grading";
 import RecommenderSystem from "./recommenderSystem/RecommenderSystem";
 import EvaluationResult from "./evaluationResult/EvaluationResult";
+import Contact from "./contact/Contact";
 
 class Routers extends React.Component {
     render() {
         return (
             <Routes>
                 <Route path="/" exact element={<Home />} />
+                <Route path="/contact" exact element={<Contact />} />
                 <Route path="/error" exact element={<Error />} />
                 <Route path="/newCourse" exact element={<NewClass />} />
                 <Route path="/addExercise" exact element={<NewExercise />} />
